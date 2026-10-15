@@ -14,6 +14,9 @@
       lualine-nvim nvim-web-devicons
       gitsigns-nvim which-key-nvim oil-nvim nvim-autopairs
       obsidian-nvim render-markdown-nvim alpha-nvim
+
+      conform-nvim
+      trouble-nvim
     ];
     # LSP servers: Python, JS/TS, Java, SQL, Go, C/C++, Rust, Nix, Lua, Bash, web, YAML, Markdown
     extraPackages = with pkgs; [
@@ -21,6 +24,12 @@
       rust-analyzer nil lua-language-server bash-language-server
       vscode-langservers-extracted yaml-language-server marksman
       ripgrep fd xclip
+
+      black
+      prettier
+      stylua
+      shfmt
+      nixfmt
     ];
     initLua = lib.fileContents ./nvim.lua;
   };
