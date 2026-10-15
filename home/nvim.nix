@@ -9,27 +9,56 @@
       material-nvim
       (nvim-treesitter.withAllGrammars)
       nvim-lspconfig
-      nvim-cmp cmp-nvim-lsp cmp-buffer cmp-path luasnip cmp_luasnip
-      telescope-nvim plenary-nvim
-      lualine-nvim nvim-web-devicons
-      gitsigns-nvim which-key-nvim oil-nvim nvim-autopairs
-      obsidian-nvim render-markdown-nvim alpha-nvim
+      nvim-cmp
+      cmp-nvim-lsp
+      cmp-buffer
+      cmp-path
+      luasnip
+      cmp_luasnip
+      telescope-nvim
+      plenary-nvim
+      lualine-nvim
+      nvim-web-devicons
+      gitsigns-nvim
+      which-key-nvim
+      oil-nvim
+      nvim-autopairs
+      obsidian-nvim
+      render-markdown-nvim
+      alpha-nvim
 
       conform-nvim
       trouble-nvim
     ];
     # LSP servers: Python, JS/TS, Java, SQL, Go, C/C++, Rust, Nix, Lua, Bash, web, YAML, Markdown
     extraPackages = with pkgs; [
-      pyright typescript-language-server jdt-language-server sqls gopls clang-tools
-      rust-analyzer nil lua-language-server bash-language-server
-      vscode-langservers-extracted yaml-language-server marksman
-      ripgrep fd xclip
+      pyright
+      typescript-language-server
+      jdt-language-server
+      sqls
+      gopls
+      clang-tools
+      rust-analyzer
+      nil
+      lua-language-server
+      bash-language-server
+      vscode-langservers-extracted
+      yaml-language-server
+      marksman
+      ripgrep
+      fd
+      xclip
 
       black
       prettier
       stylua
       shfmt
       nixfmt
+
+      # Binaries for formatters used nvim.lua
+      go
+      rustfmt
+      clang-format
     ];
     initLua = lib.fileContents ./nvim.lua;
   };
