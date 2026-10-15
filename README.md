@@ -2,6 +2,23 @@
 
 My NixOS 26.05 setup for a ThinkPad T420: **flakes + home-manager + disko**, with an **i3** desktop on X11 (started with `startx`, no display manager). Pure black theme with Material Ocean accents, all driven from a single file.
 
+## Screenshots
+
+  <table>
+    <!-- Primera fila: 3 capturas -->
+    <tr>
+      <td width="33%"><img src="assets/terminal.png" alt="Terminal"></td>
+      <td width="33%"><img src="assets/browser.png" alt="Browser"></td>
+      <td width="33%"><img src="assets/neovim.png" alt="Code (neovim)"></td>
+    </tr>
+    <!-- Segunda fila: 2 capturas centradas -->
+    <tr>
+      <td width="33%"><img src="assets/files.png" alt="Files"></td>
+      <td width="33%"><img src="assets/zathura.png" alt="PDF reader"></td>
+      <td width="33%"></td> <!-- Celda vacía para balancear las 3 columnas -->
+    </tr>
+  </table>
+
 ## Overview
 
 | Area | What I use |
@@ -24,18 +41,21 @@ Press **Super + ç** at any time to open the shortcuts cheatsheet (`home/shortcu
 
 ```
 nix-conf/
-├── flake.nix                  # inputs and outputs (t420, t420-install)
+├── flake.nix
 ├── install.sh                 # fresh install: disko + nixos-install
 ├── hosts/t420/
-│   ├── default.nix            # system config (boot, audio, X11, users, fonts...)
+│   ├── default.nix
 │   ├── disko.nix              # disk layout (used only by t420-install)
 │   └── hardware-configuration.nix
-└── home/
-    ├── default.nix            # home-manager entry point
-    ├── theme.nix              # single source of colors and fonts
-    ├── i3.nix  polybar.nix  desktop.nix  terminal.nix  apps.nix
-    ├── nvim.nix  nvim.lua     # Neovim plugins/LSPs and its Lua config
-    └── shortcuts.txt          # cheatsheet shown with Super + ç
+├── home/
+|   ├── default.nix
+|   ├── theme.nix
+|   ├── i3.nix  polybar.nix
+|   ├── nvim.nix  nvim.lua
+|   └── shortcuts.txt
+└── assets/
+|   └──screenshots...
+
 ```
 
 ## Flake outputs
@@ -133,4 +153,4 @@ Not implemented yet; planned for when I have another laptop:
 - [ ] One folder per machine under `hosts/<name>/`
 - [ ] `install.sh` with hardware detection and disk selection
 - [ ] "Lite" profile for low-RAM machines
-- [ ] Add screenshots to the README
+- [x] Add screenshots to the README
