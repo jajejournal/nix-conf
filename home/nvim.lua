@@ -119,7 +119,7 @@ vim.opt.conceallevel = 2
 pcall(function()
 	require("render-markdown").setup({})
 end)
-local ok = pcall(function()
+local obs_ok = pcall(function()
 	require("obsidian").setup({
 		workspaces = { { name = "notes", path = "~/Notes" } },
 		notes_subdir = "inbox",
@@ -129,7 +129,7 @@ local ok = pcall(function()
 		ui = { enable = false }, -- rendered by render-markdown
 	})
 end)
-if ok then
+if obs_ok then
 	local function ob(sub, legacy)
 		return function()
 			if vim.fn.exists(":Obsidian") == 2 then
@@ -204,6 +204,39 @@ vim.keymap.set("n", "<leader>cf", function()
 end, { desc = "Format file" })
 
 -- Panel de diagnósticos
-require("trouble").setup()
-vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Workspace diagnostics" })
-vim.keymap.set("n", "<leader>xd", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", { desc = "Document diagnostics" })
+pcall(function()
+	require("trouble").setup()
+end)
+local ok, trouble = pcall(require, "trouble")
+local function try_cmd(cmd)
+	pcall(vim.cmd, cmd)
+end
+
+-- Robust Trouble mappings: try v3 API, fall back to v3 command, then v2 commands (covers v2 & v3)
+vim.keymap.set("n", "<leader>xx", function()
+	if ok and pcall(function()
+		trouble.toggle("diagnostics")
+	end) then
+		return
+	end
+	-- try v3 command
+	if pcall(try_cmd, "Trouble diagnostics toggle") then
+		return
+	end
+	-- fallback to v2 command if present
+	try_cmd("TroubleToggle workspace_diagnostics")
+end, { desc = "Workspace diagnostics (robust)" })
+
+vim.keymap.set("n", "<leader>xd", function()
+	if ok and pcall(function()
+		trouble.toggle({ mode = "diagnostics", filter = { buf = 0 } })
+	end) then
+		return
+	end
+	-- try v3 command with filter
+	if pcall(try_cmd, "Trouble diagnostics toggle filter.buf=0") then
+		return
+	end
+	-- fallback to v2 command if present
+	try_cmd("TroubleToggle document_diagnostics")
+end, { desc = "Document diagnostics (robust)" })
