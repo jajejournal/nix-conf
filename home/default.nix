@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }:
 {
-  imports = [ ./i3.nix ./polybar.nix ./terminal.nix ./desktop.nix ./nvim.nix ./apps.nix ];
+  imports = [ ./i3.nix ./polybar.nix ./terminal.nix ./desktop.nix ./nvim.nix ./apps.nix ./visual-files.nix ];
 
   home.username = "manssell";
   home.homeDirectory = "/home/manssell";
