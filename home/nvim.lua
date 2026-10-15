@@ -106,9 +106,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		map("n", "K", vim.lsp.buf.hover, b)
 		map("n", "<leader>rn", vim.lsp.buf.rename, b)
 		map("n", "<leader>ca", vim.lsp.buf.code_action, b)
-		map("n", "<leader>f", function()
-			vim.lsp.buf.format({ async = true })
-		end, b)
 		map("n", "<leader>e", vim.diagnostic.open_float, b)
 	end,
 })
@@ -188,7 +185,6 @@ require("conform").setup({
 		json = { "prettier" },
 		html = { "prettier" },
 		css = { "prettier" },
-		markdown = { "prettier" },
 		lua = { "stylua" },
 		sh = { "shfmt" },
 		nix = { "nixfmt" },
@@ -203,40 +199,7 @@ vim.keymap.set("n", "<leader>cf", function()
 	require("conform").format({ lsp_format = "fallback" })
 end, { desc = "Format file" })
 
--- Panel de diagnósticos
-pcall(function()
-	require("trouble").setup()
-end)
-local ok, trouble = pcall(require, "trouble")
-local function try_cmd(cmd)
-	pcall(vim.cmd, cmd)
-end
-
--- Robust Trouble mappings: try v3 API, fall back to v3 command, then v2 commands (covers v2 & v3)
-vim.keymap.set("n", "<leader>xx", function()
-	if ok and pcall(function()
-		trouble.toggle("diagnostics")
-	end) then
-		return
-	end
-	-- try v3 command
-	if pcall(try_cmd, "Trouble diagnostics toggle") then
-		return
-	end
-	-- fallback to v2 command if present
-	try_cmd("TroubleToggle workspace_diagnostics")
-end, { desc = "Workspace diagnostics (robust)" })
-
-vim.keymap.set("n", "<leader>xd", function()
-	if ok and pcall(function()
-		trouble.toggle({ mode = "diagnostics", filter = { buf = 0 } })
-	end) then
-		return
-	end
-	-- try v3 command with filter
-	if pcall(try_cmd, "Trouble diagnostics toggle filter.buf=0") then
-		return
-	end
-	-- fallback to v2 command if present
-	try_cmd("TroubleToggle document_diagnostics")
-end, { desc = "Document diagnostics (robust)" })
+-- Diagnostics panel (Trouble v3)
+require("trouble").setup()
+vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Workspace diagnostics" })
+vim.keymap.set("n", "<leader>xd", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", { desc = "Document diagnostics" })

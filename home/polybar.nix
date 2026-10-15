@@ -157,7 +157,7 @@ in
         click-right = "${btToggle}";
       };
 
-      # Click: battery details (tlp-stat)
+      # Click: battery details (sysfs popup)
       "module/battery" = {
         type = "internal/battery";
         battery = "BAT0";

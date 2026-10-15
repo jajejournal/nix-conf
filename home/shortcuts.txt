@@ -252,8 +252,10 @@
    K ........................ show documentation under cursor
    space r n .............. rename (also grn)
    space c a .............. code actions  (also gra)
-   space f ................ format file
+   space c f .............. format file (also automatic on save)
    space e ................ show line diagnostics
+   space x x .............. all project errors (Trouble panel)
+   space x d .............. errors in this file only
    grr ...................... show references
    gri ...................... go to implementation
    gO ....................... list file symbols
