@@ -55,10 +55,10 @@
       shfmt
       nixfmt
 
-      # Binaries for formatters used nvim.lua
+      # Binarios para los formatters usados en nvim.lua
       go
       rustfmt
-      clangPackages.clang-format
+      # clang-format NO está aquí explícito porque clang-tools ya lo proporciona
     ];
     initLua = lib.fileContents ./nvim.lua;
   };
