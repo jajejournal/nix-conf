@@ -58,7 +58,7 @@
       # Binaries for formatters used nvim.lua
       go
       rustfmt
-      clang-format
+      clangPackages.clang-format
     ];
     initLua = lib.fileContents ./nvim.lua;
   };
