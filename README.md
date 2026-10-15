@@ -1,229 +1,135 @@
-# nix-conf — Mi configuración NixOS / dotfiles
+# nix-conf
 
-Este repositorio contiene mi configuración (flake) y dotfiles para un portátil de trabajo. Está pensada para ser práctica, reproducible y segura —incluye el sistema NixOS, la configuración de i3/polybar/alacritty, y la configuración de Neovim como IDE ligero.
+My NixOS 26.05 setup for a ThinkPad T420: **flakes + home-manager + disko**, with an **i3** desktop on X11 (started with `startx`, no display manager). Pure black theme with Material Ocean accents, all driven from a single file.
 
-He aquí una guía clara y portable para instalar y adaptar esta configuración en otras máquinas, junto con ideas para mejorar la instalación y la compatibilidad entre distintos equipos y arquitecturas.
+## Overview
 
----
+| Area | What I use |
+| --- | --- |
+| Window manager | i3 (gaps, vim-style keys) |
+| Bar | polybar (top), clickable modules |
+| Terminal / shell | alacritty, fish, starship, zoxide, fzf, eza, bat |
+| Launcher / notifications | rofi, dunst |
+| Compositor | picom |
+| Editor | Neovim: LSP, completion, format on save (conform), diagnostics panel (trouble), start screen (alpha) |
+| Notes | Neovim + obsidian.nvim, vault in `~/Notes` |
+| Files / media | yazi, zathura, mpv, imv, cmus |
+| Browser | Firefox (declarative profile) |
+| Theme | JetBrainsMono Nerd Font + Inter, colors from `home/theme.nix` |
+| Disk | disko: GPT, 1 GB ESP + ext4 root (LUKS optional) |
 
-## Resumen rápido
+Press **Super + ç** at any time to open the shortcuts cheatsheet (`home/shortcuts.txt`).
 
-- Sistema: NixOS (flake)
-- Window manager: i3 (o i3-compatible)
-- Terminal: alacritty / st (según la máquina)
-- Editor: Neovim con LSP, completado, formateo al guardar (conform) y panel de diagnósticos (trouble)
-- Gestión de dotfiles: flake + scripts de instalación
-- Seguridad: las contraseñas no están en el repo; se usan secretos (hash en `/etc/secrets`)
-
----
-
-## TODOS
-
-- [ ] Quitar o remapear atajo conflictivo en Neovim (`<leader>f`)
-- [ ] Evitar que Prettier formatee los archivos de notas del vault
-- [ ] Añadir `.gitignore` para backups y artefactos (`*.bak.*`, `result`)
-- [ ] Documentar el flujo de LUKS y la variable `PONER_SERIAL` para soportar otras máquinas
-- [ ] Revisar y simplificar mappings de Trouble si todos los hosts usan v3
-- [ ] Actualizar `shortcuts.txt` con los atajos reales
-- [ ] Añadir plantillas `machines/<serial>.nix` para nuevos equipos
-- [ ] Añadir tests básicos / comprobaciones headless para Neovim (conform, trouble)
-- [ ] Mejorar `install.sh` con flags `--disk`, `--luks`, `--arch`, `--user`, `--dry-run`
-
----
-
-## Estructura (esquema de carpetas)
-
-Raíz del repo (esquema orientativo — usa este apartado como mapa para añadir overrides por máquina):
+## Repository layout
 
 ```
 nix-conf/
-├── flake.nix
-├── install.sh
-├── disko.nix
-├── README.md
-├── .gitignore
-├── machines/
-│   ├── serial-<SERIAL>.nix
-│   └── README.md
-├── home/
-│   ├── nvim.nix
-│   ├── nvim.lua
-│   └── ... (otras configuraciones de home-manager)
-├── scripts/
-│   ├── bin/
-│   │   └── select-disk        # script interactivo recomendado
-│   └── helpers/
-├── screenshots/
-│   ├── desktop-overview.png
-│   ├── polybar.png
-│   ├── alacritty-nvim.png
-│   ├── neovim-completion.png
-│   ├── alpha-start.png
-│   ├── install-dryrun.png
-│   └── disko-layout.png
-├── secrets/                   # IGNORAR: .gitignored — instrucciones para cifrar y desplegar
-└── docs/
-    ├── machines/README.md
-    └── contributing.md
+├── flake.nix                  # inputs and outputs (t420, t420-install)
+├── install.sh                 # fresh install: disko + nixos-install
+├── hosts/t420/
+│   ├── default.nix            # system config (boot, audio, X11, users, fonts...)
+│   ├── disko.nix              # disk layout (used only by t420-install)
+│   └── hardware-configuration.nix
+└── home/
+    ├── default.nix            # home-manager entry point
+    ├── theme.nix              # single source of colors and fonts
+    ├── i3.nix  polybar.nix  desktop.nix  terminal.nix  apps.nix
+    ├── nvim.nix  nvim.lua     # Neovim plugins/LSPs and its Lua config
+    └── shortcuts.txt          # cheatsheet shown with Super + ç
 ```
 
----
+## Flake outputs
 
-## Soportado (por diseño)
+| Output | Use |
+| --- | --- |
+| `.#t420` | An already installed NixOS system (daily use) |
+| `.#t420-install` | Fresh install with disko, used by `install.sh` |
 
-- Arquitectura principal: x86_64 (amd64)
-- Soporte adicional: ARM64 (aarch64) — requiere ajustar variables de flake y paquetería
-- UEFI y BIOS (legacy) — el instalador detecta UEFI si existe `/sys/firmware/efi`
-- Opcional: LUKS (encriptado de disco) — el flake y los módulos de `disko` están preparados, pero la instalación por defecto no fuerza cifrado
+## Installation
 
----
+### Option A: NixOS is already installed (nothing is wiped)
 
-## Objetivos de compatibilidad (qué incluir en el instalador)
+```sh
+nix-shell -p git openssl
+git clone https://github.com/jajejournal/nix-conf && cd nix-conf
 
-Para que la instalación sea reutilizable en varias laptops y arquitecturas, el instalador debe:
+# Reuse this machine's hardware config
+cp /etc/nixos/hardware-configuration.nix hosts/t420/
+git add -f hosts/t420/hardware-configuration.nix
 
-- Detectar la arquitectura (x86_64 / aarch64) y ajustar la flake/paquetes.
-- Detectar si el sistema arranca en UEFI o BIOS y adaptar la partición EFI.
-- Ofrecer selección interactiva del disco destino (o permitir pasar `--disk /dev/sdX`).
-- Soportar LUKS como opción (`--luks`) y permitir elegir passphrase o leer desde stdin.
-- Validar la flake y los cambios con `nix eval` / `nix build` antes de tocar particiones.
-- Crear usuario con UID/GID configurable y copiar las claves públicas SSH.
-- Confirmar explícitamente (y mostrar un resumen) antes de aplicar `disko`/particionado.
-- Registrar un `serial` o `HOST_ID` por máquina para personalizaciones (no hardcodear).
+# Password hash (never stored in the repo)
+sudo mkdir -p /etc/secrets
+openssl passwd -6 | sudo tee /etc/secrets/password-hash >/dev/null
+sudo chmod 600 /etc/secrets/password-hash
 
----
+sudo nixos-rebuild switch --flake .#t420
+```
 
-## Instalación (rápida)
+### Option B: fresh install from the minimal ISO (erases the whole disk)
 
-Advertencia: la instalación toca particiones. Haz backup.
+1. Boot the NixOS minimal ISO, then `sudo loadkeys es` and connect to the network.
+2. `git clone https://github.com/jajejournal/nix-conf && cd nix-conf`
+3. In `hosts/t420/disko.nix`, set `device` to your disk (`ls -l /dev/disk/by-id/`).
+4. `sudo ./install.sh`
 
-1. Clona el repo:
-   git clone https://github.com/jajejournal/nix-conf.git
-   cd nix-conf
+The script asks for the password, generates the hardware config, checks that the configuration evaluates **before** touching the disk, asks you to type `YES`, partitions with disko (LUKS passphrase prompt), installs, and copies the repo to `~/nix-conf`.
 
-2. Revisa `install.sh` y adapta las variables si vas a usar otra arquitectura o esquema de disco.
+After rebooting, log in and run `startx`.
 
-3. Ejecuta (modo seguro — solo `nix eval` primero):
-   ./install.sh --dry-run
-   Si todo se ve bien:
-   sudo ./install.sh
+> LUKS is controlled by `useLuks` in `hosts/t420/disko.nix` (on by default). Only fresh installs with `install.sh` are encrypted; Option A keeps whatever the existing system has.
 
-4. Después del reboot, aplica la configuración del usuario:
-   sudo nixos-rebuild switch --flake .#t420
+## Daily use
 
----
+```sh
+cd ~/nix-conf
+sudo nixos-rebuild switch --flake .#t420   # apply changes
+nix flake update                           # update inputs (then rebuild)
+git add -A && git commit && git push
+```
 
-## Diseño del particionado (disko)
+Nix flakes only see files tracked by git, so run `git add` on new files before rebuilding.
 
-El repositorio incluye un módulo `disko.nix` que define layouts. Recomendaciones:
+## Customizing
 
-- Mantén plantillas para:
-  - UEFI + LUKS + LVM (portátil cifrado)
-  - UEFI simple (no cifrado)
-  - BIOS legacy (MBR)
-- No infieras el disco por defecto: lista discos y pide confirmación interactiva.
-- Antes de aplicar `disko`, ejecuta `nix eval --impure` o `nixos-generate-config` para validar.
-- Guarda la configuración de particiones por tipo de hardware (`machines/<serial>.nix`) y documenta cómo añadir un nuevo perfil.
+- **Colors and fonts:** edit `home/theme.nix`. i3, polybar, alacritty, rofi, dunst, yazi, zathura and tmux all follow it.
+- **Programs:** add packages in `home/apps.nix` (terminal tools) or `home/default.nix`.
+- **Neovim:** plugins and language servers in `home/nvim.nix`, behavior in `home/nvim.lua`. LSP servers and formatters come from Nix, so there is no Mason.
+- **Shortcuts:** keep `home/shortcuts.txt` in sync when you change keybindings.
 
-Sugerencia de flujo seguro:
-- detectar discos: `lsblk -o NAME,MODEL,SIZE,TYPE,MOUNTPOINT`
-- pedir selección interactiva (fzf/whiptail)
-- mostrar diff de cambios que `disko` hará
-- confirmar YES/NO
+## Neovim quick reference
 
----
+Leader key is `Space`.
 
-## Usuario y secretos
+| Keys | Action |
+| --- | --- |
+| `<leader>ff` / `fg` / `fb` | Find files / search text / buffers |
+| `-` | File explorer (oil) |
+| `gd` / `K` | Go to definition / hover docs |
+| `<leader>rn` / `ca` | Rename / code actions |
+| `<leader>cf` | Format file (also automatic on save) |
+| `<leader>xx` / `xd` | Project / file diagnostics (trouble) |
+| `<leader>on` / `of` / `od` | New note / find note / today's note |
 
-- No subas contraseñas ni claves privadas.
-- Guarda secretos en `/etc/secrets` (o usa `age`, `gpg` o un secret manager).
-- El instalador debe:
-  - crear el usuario (nombre, UID opcional, grupos)
-  - añadir claves públicas SSH desde `~/.ssh/authorized_keys` (o preguntarlas)
-  - permitir inyección de `secrets` (hash o fichero en el host) durante la instalación
+Languages with LSP: Python, JS/TS, Java, SQL, Go, C/C++, Rust, Nix, Lua, Bash, HTML/CSS/JSON, YAML, Markdown.
 
-Organización recomendada:
-- `machines/serial-<SERIAL>.nix` — overrides por hardware (discos, drivers)
-- `users/<username>.nix` — configuración específica del usuario (dotfiles, paquetes)
-- `secrets/` — .gitignored, con instrucciones para cifrar y desplegar
+## Secrets
 
----
+No passwords or keys are stored in this repo. User and root passwords are read from a hash in `/etc/secrets/password-hash`, created with `openssl passwd -6`.
 
-## Pruebas rápidas y comprobaciones
+## Troubleshooting
 
-- Comprobar que conform y trouble cargan:
-  nvim --headless -c 'lua print("conform:", pcall(require,"conform"))' -c 'qa'
-  nvim --headless -c 'lua print("trouble:", pcall(require,"trouble"))' -c 'qa'
+- **Home-manager fails on an existing file** (e.g. Firefox `profiles.ini`): the flake already sets `backupFileExtension = "backup"`, so the old file is renamed.
+- **A package name does not exist:** names change between nixpkgs branches. Search with `nix search nixpkgs <name>`.
+- **Conform does not format a language:** make sure its formatter (black, prettier, stylua...) is in `extraPackages` in `home/nvim.nix`.
+- **Trouble:** this config uses Trouble v3 (`:Trouble diagnostics toggle`). The old v2 `:TroubleToggle` commands do not exist.
+- **Backlight module empty in polybar:** check your device with `ls /sys/class/backlight/`. The T420 uses `acpi_video0`.
+- **A polybar click does nothing:** scripts run with a minimal PATH, so use absolute paths (`${pkgs.foo}/bin/foo`).
 
-- Test de formateo:
-  printf "%s\n" "def foo():" "    print(  \"hello\" )" > /tmp/test_format.py
-  nvim --headless /tmp/test_format.py -c 'w' -c 'qa'
-  sed -n '1,120p' /tmp/test_format.py
+## TODO
 
----
+Not implemented yet; planned for when I have another laptop:
 
-## Sugerencias para hacer `install.sh` más portable (ideas prácticas)
-
-- Añadir banderas:
-  --disk /dev/sdX         dispositivo objetivo
-  --arch x86_64|aarch64   forzar arquitectura
-  --luks                  habilitar cifrado
-  --user NAME             nombre de usuario a crear
-  --dry-run               validar sin aplicar
-- Validaciones:
-  - Comprobar UEFI: `[ -d /sys/firmware/efi ]`
-  - Validar flake: `nix build .#nixosConfigurations.t420.config.system.build.toplevel`
-  - Mostrar `lsblk` y pedir confirmación
-- Registro y logging del instalador (guardarlo en `/var/log/install-YYYYMMDD.log`)
-
----
-
-## Screenshots recomendados (qué tomar y por qué)
-
-Incluye capturas optimizadas para mostrar las partes más vistosas y útiles de la configuración. Nombres de archivo sugeridos:
-
-- screenshots/desktop-overview.png  
-  Captura completa del escritorio (i3) mostrando barra, ventanas y tema (Material Ocean).
-
-- screenshots/polybar.png  
-  Zoom en polybar mostrando battery, wifi, workspace, reloj y scripts de estado.
-
-- screenshots/alacritty-nvim.png  
-  Terminal con Neovim abierto mostrando un archivo con LSP activo y panel de trouble abierto.
-
-- screenshots/neovim-completion.png  
-  Neovim mostrando autocompletado y snippets (popup de cmp).
-
-- screenshots/alpha-start.png  
-  Pantalla de inicio (`alpha`) con botones custom.
-
-- screenshots/install-dryrun.png  
-  Salida del instalador en modo `--dry-run` (nix eval / disco propuesto). Útil para documentación de seguridad.
-
-- screenshots/disko-layout.png  
-  Diagrama o screenshot mostrando el layout de particiones (p.ej. `lsblk` o `parted -l`).
-
-Consejos para capturas:
-- Usa fondo oscuro y tamaño 16:9 para consistencia.
-- Añade un pie de foto breve en el README (ejemplo: `desktop-overview.png — i3 + Material Ocean theme`).
-- Si subes imágenes a Imgur o al repo, referencia su URL en el README.
-
----
-
-## Troubleshooting (problemas frecuentes)
-
-- `nixos-rebuild` falla por paquetes inexistentes:
-  - Revisa `home/nvim.nix` y `extraPackages` (algunos nombres cambian entre ramas de nixpkgs).
-- `conform` no formatea:
-  - Asegúrate de que el binario (black, prettier, stylua, etc.) esté en `extraPackages`.
-- `Trouble` comandos:
-  - v3 usa `:Trouble diagnostics toggle`; v2 usa `:TroubleToggle workspace_diagnostics`. El config incluye mapeo robusto para ambas.
-
----
-
-## Contribuir
-
-- Haz fork y PR con cambios pequeños y pruebas.
-- Para añadir soporte a una nueva laptop:
-  - Añade `machines/<serial-or-model>.nix` con overrides.
-  - Documenta los pasos en `machines/README.md`.
+- [ ] One folder per machine under `hosts/<name>/`
+- [ ] `install.sh` with hardware detection and disk selection
+- [ ] "Lite" profile for low-RAM machines
+- [ ] Add screenshots to the README
