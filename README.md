@@ -15,7 +15,6 @@ My NixOS 26.05 setup for a ThinkPad T420: **flakes + home-manager + disko**, wit
     <tr>
       <td width="33%"><img src="assets/files.png" alt="Files"></td>
       <td width="33%"><img src="assets/zathura.png" alt="PDF reader"></td>
-      <td width="33%"></td> <!-- Celda vacía para balancear las 3 columnas -->
     </tr>
   </table>
 
