@@ -4,8 +4,8 @@ let t = import ./theme.nix; in
   programs.alacritty = {
     enable = true;
     settings = {
-      font = { size = 11.0; normal.family = t.font.mono; };
-      window = { padding = { x = 10; y = 8; }; opacity = 1.0; };
+      font = { size = 12.0; normal.family = t.font.mono; };
+      window = { padding = { x = 10; y = 8; }; opacity = 0.65; };
       colors = {
         primary = { background = t.bg; foreground = t.fg; };
         cursor = { text = t.bg; cursor = t.blue; };
