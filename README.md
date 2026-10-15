@@ -129,6 +129,7 @@ No passwords or keys are stored in this repo. User and root passwords are read f
 
 Not implemented yet; planned for when I have another laptop:
 
+- [x] Try not to use the translator so much.
 - [ ] One folder per machine under `hosts/<name>/`
 - [ ] `install.sh` with hardware detection and disk selection
 - [ ] "Lite" profile for low-RAM machines
