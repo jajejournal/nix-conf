@@ -1,0 +1,433 @@
+================================================================================
+  KEYBOARD SHORTCUTS  -  ThinkPad T420 · NixOS · i3
+  Open this menu: Win + ç        Search: /word   Next: n   Quit: q
+================================================================================
+
+  "Mod" = Windows key (Super).   Ctrl, Alt, Shift = as usual.
+  Contents:
+     1. i3 (windows & workspaces)      9. Zathura (PDFs & books)
+     2. ThinkPad physical keys         10. mpv (video)
+     3. Bar (clicks)                   11. imv (images)
+     4. Terminal (alacritty) & fish    12. cmus (music)
+     5. tmux                           13. Notes (obsidian.nvim)
+     6. Yazi (files)                   14. rofi / btop / lazygit
+     7. Neovim                         15. Firefox
+     8. Telescope / Oil / completion   16. Git and NixOS (commands)
+
+
+================================================================================
+  1. i3  -  WINDOWS AND WORKSPACES
+================================================================================
+
+ Programs
+   Mod + Enter ............ terminal
+   Mod + Shift + Enter .... small floating terminal
+   Mod + d ................ application launcher (rofi)
+   Mod + b ................ Firefox          -> workspace 2
+   Mod + e ................ Yazi (files)      -> workspace 4
+   Mod + n ................ notes in neovim (~/Notes) -> workspace 5
+   Mod + m ................ cmus (music)      -> workspace 6
+   Mod + Shift + b ........ btop (system monitor)
+   Mod + ç ................ this shortcuts menu
+   Mod + Esc .............. lock screen
+   Mod + Shift + e ........ power / reboot / lock / logout menu
+   Print .................. screenshot area -> clipboard
+   Shift + Print .......... screenshot area -> save to ~/Pictures
+
+ (When opening these programs, i3 also moves you to their workspace.
+  Neovim (code) -> 3.  Window borders: blue = focused, grey = others.)
+
+ Windows
+   Mod + Shift + q ........ close window
+   Mod + h / j / k / l .... move focus  (left / down / up / right)
+   Mod + arrows ........... move focus
+   Mod + Shift + h/j/k/l .. move window
+   Mod + f ................ fullscreen
+   Mod + Shift + Space .. toggle floating / tiling
+   Mod + Space .......... switch focus between floating and tiling
+   Mod + a ................ focus parent container
+   Mod + left-click (drag)  move a floating window
+   Mod + right-click (drag) resize a floating window
+
+ Split and layout
+   Mod + \ ................ next window opens to the side (horizontal)
+   Mod + - or Mod + v ...... next window opens below (vertical)
+   Mod + s ................ stacked layout
+   Mod + w ................ tabbed layout
+   (Note: Mod + e no longer toggles split; it now opens Yazi.)
+
+ Resize
+   Mod + r ................ resize mode; arrows to adjust,
+                            Enter or Esc to exit
+
+ Workspaces (1 to 10)
+   Mod + 1 ... Mod + 0 .... go to workspace
+   Mod + Shift + 1 ... 0 .. send window to that workspace
+   Bar icons:  1 terminal · 2 web · 3 code · 4 files
+                5 notes · 6 music
+
+ i3 system
+   Mod + Shift + c ........ reload configuration
+   Mod + Shift + r ........ restart i3 (without closing programs)
+
+
+================================================================================
+  2. THINKPAD PHYSICAL KEYS
+================================================================================
+
+   Volume up / down ........ adjusts 5% (max 100%)
+   Speaker mute ............ mute audio
+   Microphone mute ......... mute microphone
+   Brightness + / - ......... increase / decrease 5%
+   ThinkVantage button ...... power/reboot/lock/logout menu
+   (If a key doesn't respond, open a terminal and try: xev)
+
+
+================================================================================
+  3. POLYBAR  -  MOUSE CLICKS
+================================================================================
+
+   Workspaces (icons) ........ click = go to that workspace
+   Time / calendar ........... click = floating calendar
+   CPU and RAM ............... click = floating btop
+   Volume .................... click = audio mixer (pavucontrol)
+   Bluetooth ................ left click = bluetooth manager
+                                 right click = toggle on/off
+   Battery ................... click = details (status, health, cycles)
+   Wifi / LAN ................ click = choose network (nmtui)
+                                 in nmtui: arrows, Enter, Esc to exit
+
+
+================================================================================
+  4. TERMINAL (ALACRITTY) AND FISH
+================================================================================
+
+ Alacritty
+   Ctrl + Shift + C / V ....... copy / paste
+   Shift + PageUp / PageDown .. scroll history
+   Ctrl + Shift + F ........... search on screen
+   Ctrl + Shift + Space ..... vi mode (move & copy with keyboard)
+   Ctrl + "+"  /  Ctrl + "-" .. increase / decrease font size
+   Ctrl + 0 ................... reset font size
+
+ Fish (the shell)
+   Tab ........................ autocomplete
+   Right arrow or Ctrl + F .. accept the ghost suggestion
+   Alt + right arrow ....... accept only one word
+   Ctrl + R ................... search history (fzf)
+   Ctrl + T ................... find a file and paste it into the line (fzf)
+   Alt + C .................... cd to a directory by search (fzf)
+   Ctrl + C ................... cancel command
+   Ctrl + L ................... clear screen
+   Ctrl + A / Ctrl + E ........ start / end of line
+   Ctrl + W ................... delete previous word
+
+ Shortcuts available
+   z folder .................. jump to a previously visited folder (zoxide)
+   zi ......................... same but choose from a list
+   y .......................... open Yazi (it leaves you in that folder on exit)
+   v .......................... neovim
+   ll  /  la .................. list files with icons (eza)
+   cat file .................. show file with colors (bat)
+   fastfetch .................. system info
+   tldr command ............... quick examples for a command
+
+
+================================================================================
+  5. TMUX  (prefix = Ctrl + A, release it then press the key)
+================================================================================
+
+   tmux ....................... open (in terminal)
+   tmux new -s name ........... open with name
+   tmux a ..................... attach to an open session
+   Prefix + c ................ new window
+   Prefix + n / p ............ next / previous window
+   Prefix + 1 ... 9 .......... go to that window
+   Prefix + , ................ rename window
+   Prefix + % ................ split columns
+   Prefix + " ................ split rows
+   Prefix + arrows .......... move between panes
+   Prefix + z ................ zoom / unzoom pane
+   Prefix + x ................ close pane
+   Prefix + d ................ detach without closing (session keeps running)
+   Prefix + [ ................ copy mode: v to select, y copy, q exit
+   (Mouse also works: click on panes and tabs.)
+
+
+================================================================================
+  6. YAZI (file manager)  -  opened with Mod + e or y
+================================================================================
+
+ Navigation
+   j / k  (or arrows) ......... down / up
+   l  or  Enter ............... enter folder or open file
+   h .......................... go to parent folder
+   gg / G ..................... go to top / bottom
+   Tab ........................ detailed file info
+   z .......................... jump to a folder by searching (fzf)
+   Z .......................... jump to a visited folder (zoxide)
+
+ Selection
+   Space .................... mark / unmark file
+   v ........................ selection mode (use j / k to choose multiple)
+   Ctrl + A .................. mark all
+   Ctrl + R .................. invert selection
+   Esc ........................ cancel selection
+
+ Operations
+   y .......................... copy
+   x .......................... cut
+   p .......................... paste
+   P .......................... paste and overwrite
+   d .......................... move to trash
+   D .......................... DELETE FOREVER (asks for confirmation)
+   a .......................... create file  (end name with / to create folder)
+   r .......................... rename
+   o  /  O .................... open / open with another program
+   ; .......................... run a shell command
+   .  ......................... show / hide hidden files
+   ,  ......................... sort (name, size, date...)
+
+ Copy paths (c then)
+   c c ........................ copy full path
+   c d ........................ copy folder path
+   c f ........................ copy filename
+   c n ........................ copy name without extension
+
+ Search
+   /  and  ? .................. search forward / backward in folder
+   n  /  N .................... next / previous result
+   f .......................... filter list while typing
+   s .......................... search files by name (in subfolders)
+   S .......................... search text inside files
+
+ Tabs and help
+   t .......................... new tab
+   1 ... 9 .................... go to that tab
+   [  /  ] .................... previous / next tab
+   q .......................... quit  (with y, it leaves you in the current folder)
+   ~  or  F1 ................... help with all shortcuts
+
+
+================================================================================
+  7. NEOVIM   (space = leader key)
+================================================================================
+
+ Vim essentials
+   i ........................ insert (insert mode)     Esc ... back
+   :w  Enter ................ save          :q ... quit
+   :wq ....................... save and quit   :q! .. quit without saving
+   u ........................ undo         Ctrl + R ... redo
+   dd ....................... delete line  yy ... copy line
+   p ........................ paste            v / V ... visual select
+   x ........................ delete char  ciw ... change inner word
+   w / b .................... next / previous word
+   0 / $ .................... start / end of line
+   gg / G ................... start / end of file
+   /text Enter ............. search         n / N ... next / previous
+   gcc ...................... toggle comment line
+   gc (in visual) ........... toggle comment selection
+   Ctrl + W  v / s .......... split vertical / horizontal
+   Ctrl + W  h/j/k/l ........ move between splits
+   :e file ................. open a file
+   :help topic ............. neovim help
+
+ Custom shortcuts (space first)
+   space w .................. save
+   space q .................. quit
+   Esc ...................... clear search highlight
+   -  ....................... file explorer (Oil)
+   space f f .............. find files
+   space f g .............. live grep (search text)
+   space f b .............. open buffers
+   space f h .............. help tags
+   (Press space and wait: which-key shows all shortcuts.)
+
+ Start screen
+   e new file · f find file · r recent · g search text
+   n notes · c config (nix-conf) · q quit
+
+ Programming (LSP)
+   gd ....................... go to definition
+   K ........................ show documentation under cursor
+   space r n .............. rename (also grn)
+   space c a .............. code actions  (also gra)
+   space f ................ format file
+   space e ................ show line diagnostics
+   grr ...................... show references
+   gri ...................... go to implementation
+   gO ....................... list file symbols
+   ]d  /  [d ................ next / previous diagnostic
+   Languages: Python, JS/TS, Java, SQL, Go, C/C++, Rust, Nix, Lua, Bash,
+              HTML, CSS, JSON, YAML, Markdown
+
+ Completion (while typing)
+   Ctrl + Space ........... open suggestions
+   Tab / Shift + Tab ...... next / previous suggestion
+   Enter .................. accept
+
+
+================================================================================
+  8. TELESCOPE, OIL
+================================================================================
+
+ Telescope (finders)
+   Type to filter.   Ctrl + N / Ctrl + P  or  arrows ..... move
+   Enter ............. open
+   Ctrl + X / Ctrl + V  open in horizontal / vertical split
+   Esc ................ close
+
+ Oil (text-editable file explorer) - opened with "-"
+   Enter ............. open file or folder
+   - .................. go up one folder
+   To rename or delete: edit the line as text (i, dd, etc.)
+   and save with :w to apply changes (asks for confirmation).
+   g? ................ help for Oil
+
+
+================================================================================
+  9. ZATHURA  (PDFs and ebooks)    zathura file.pdf
+================================================================================
+
+   j / k ..................... down / up
+   Ctrl + D / Ctrl + U ....... half page down / up
+   J / K ..................... next / previous page
+   gg / G .................... first / last page
+   number + G ................ go to that page
+   + / - ..................... zoom in / out
+   a ......................... fit to page
+   s ......................... fit to width
+   / text  Enter ............ search         n / N ... next / previous
+   Ctrl + R .................. invert colors (dark mode)
+   Tab ....................... document index
+   r ......................... rotate
+   d ......................... two pages side-by-side
+   F11 ....................... fullscreen
+   q ......................... quit
+
+
+================================================================================
+10. MPV  (video)    mpv file.mp4    ·    mpv --vo=tct file (in terminal)
+================================================================================
+
+   Space ................... pause / play
+   Left / Right arrows ..... skip 5 seconds
+   Up / Down arrows ........ skip 1 minute
+   9 / 0 ................... decrease / increase volume
+   m ....................... mute
+   f ....................... fullscreen
+   [ / ] ................... decrease / increase speed   (Backspace = normal)
+   v ....................... toggle subtitles
+   j ....................... change subtitle track
+   # ....................... change audio track
+   s ....................... screenshot
+   < / > ................... previous / next playlist item
+   i ....................... show stats
+   q ....................... quit (remembers position)
+   DVD: mpv dvd://
+
+
+================================================================================
+11. IMV  (images)    imv photo.jpg
+================================================================================
+
+   n / p  (or arrows) ..... next / previous image
+   + / - .................. zoom in / out
+   h j k l ................ move image when zoomed
+   f ...................... fullscreen
+   s ...................... change fit mode
+   q ...................... quit
+   In terminal:  chafa photo.jpg
+
+
+================================================================================
+12. CMUS  (music)    Mod + m
+================================================================================
+
+   1 ........................ library       3 ... playlist     4 ... queue
+   5 ........................ file browser
+   :add ~/Music  Enter ...... add your music folder
+   Enter .................... play
+   c ........................ pause            x ... play again
+   v ........................ stop
+   b / z .................... next / previous
+   arrows left / right ...... rewind / forward
+   + / - .................... volume
+   / ........................ search
+   q ........................ quit
+
+
+================================================================================
+13. NOTES  (neovim + obsidian.nvim, folder ~/Notes)
+================================================================================
+
+   space o n ............... new note
+   space o f ............... find a note by name
+   space o s ............... search text in all notes
+   space o b ............... backlinks (who links to this note)
+   space o l ............... links in this note
+   space o d ............... today's note (daily)
+   Links: write [[name]]  ·  New notes go to ~/Notes/inbox
+   From the neovim start screen: key n opens the notes folder.
+
+
+================================================================================
+14. ROFI, BTOP, LAZYGIT
+================================================================================
+
+ Rofi (Mod + d)
+   Type to filter · Enter opens · Esc closes · arrows or Ctrl + J/K
+
+ Btop (Mod + Shift + b or click on CPU/RAM)
+   f .... filter processes      k .... kill a process
+   Esc .. menu                  q .... quit
+
+ Lazygit (type lazygit inside a git project)
+   Space .. stage / unstage a file      a .. stage all
+   c ........ commit                    P .. push
+   p ........ pull                      1-5 .. switch panel
+   ? ........ help                      q .. quit
+
+
+================================================================================
+15. FIREFOX
+================================================================================
+
+   Ctrl + T / Ctrl + W ........ new tab / close tab
+   Ctrl + Shift + T ........... reopen closed tab
+   Ctrl + Tab ................. next tab      Alt + 1..9 ... go to it
+   Ctrl + L  or F6 ............ address bar
+   Ctrl + F ................... find on page
+   Alt + Left / Right ......... back / forward
+   Ctrl + R  or F5 ............ reload
+   Ctrl + D ................... bookmark
+   Ctrl + + / - / 0 ........... zoom
+   Ctrl + Shift + P ........... private window
+   F12 ........................ developer tools
+
+
+================================================================================
+16. GIT AND NIXOS  (useful commands)
+================================================================================
+
+ Apply configuration changes
+   cd ~/nix-conf
+   sudo nixos-rebuild switch --flake .#t420     apply and activate
+   sudo nixos-rebuild switch --rollback         rollback to previous generation
+   systemctl --user restart polybar             restart the bar
+
+ Push changes to GitHub
+   git status                                   see what's changed
+   git add -A                                   stage everything
+   git commit -m "what I changed"               save the commit
+   git push                                     push to GitHub
+   git pull                                     fetch changes
+
+ Maintenance
+   nix flake update                             update flake inputs (then rebuild)
+   sudo nix-collect-garbage -d                  free disk space
+   nix-shell -p package                         try a program without installing it
+   nmtui                                        wifi networks
+   bluetui                                      bluetooth in terminal
+
+================================================================================
