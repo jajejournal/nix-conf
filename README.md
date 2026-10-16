@@ -58,6 +58,7 @@ nix-conf/
 │   ├── nvim.nix  nvim.lua
 │   └── shortcuts.txt
 └── assets/
+    ├── wallpaper.png
     └── screenshots...
 
 ```
@@ -117,6 +118,7 @@ Nix flakes only see files tracked by git, so run `git add` on new files before r
 
 - **Colors and fonts:** edit `home/theme.nix`. i3, polybar, alacritty, rofi, dunst, yazi, zathura and tmux all follow it.
 - **Bar:** modules in `home/polybar.nix`. The bar shows only the time; clicking it opens a live clock + calendar (press any key to close).
+- **Wallpaper:** `assets/wallpaper.png` is copied to `~/Pictures/wallpaper.png` and set with `feh --bg-fill` when the session starts. Replace that file to change it.
 - **Programs:** add packages in `home/apps.nix` (terminal tools) or `home/default.nix`.
 - **System (generic):** `modules/common.nix` and `modules/desktop.nix`.
 - **Per machine:** `hosts/<name>/default.nix` (hostname, boot loader, GPU).

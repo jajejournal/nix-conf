@@ -27,6 +27,7 @@ in
     enable = true;
     initExtra = ''
       ${pkgs.xsetroot}/bin/xsetroot -solid "${t.bg}"
+      ${pkgs.feh}/bin/feh --bg-fill ${home}/Pictures/wallpaper.png
       ${pkgs.xset}/bin/xset r rate 250 40
     '';
     windowManager.i3 = {

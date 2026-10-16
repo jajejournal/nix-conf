@@ -18,6 +18,7 @@
     exec "$HOME/.xsession"
   '';
   home.file."Pictures/.keep".text = "";
+  home.file."Pictures/wallpaper.png".source = ../assets/wallpaper.png;
   xdg.configFile."shortcuts.txt".source = ./shortcuts.txt;
   home.file."Notes/.keep".text = ""; # notes vault (Markdown)
 }
