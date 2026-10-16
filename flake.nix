@@ -26,10 +26,18 @@
 
   outputs = { self, nixpkgs, home-manager, disko, nixos-hardware, ... }@inputs:
     let
+      lib = nixpkgs.lib;
+
       # ⚠️  Change your username here, and also in install.sh
       user = "manssell";
 
-      mkHost = host: extraModules: nixpkgs.lib.nixosSystem {
+      # Every folder in hosts/ that has a default.nix becomes a machine,
+      # automatically. You never edit this file to add a laptop.
+      hosts = lib.filterAttrs
+        (name: type: type == "directory" && builtins.pathExists (./hosts + "/${name}/default.nix"))
+        (builtins.readDir ./hosts);
+
+      mkHost = host: extraModules: lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs user; };
         modules = [
@@ -47,17 +55,19 @@
           }
         ] ++ extraModules;
       };
+
+      # For each machine: ".#<name>" (installed system) and ".#<name>-install"
+      # (fresh install with disko, used by install.sh).
+      perHost = name: {
+        "${name}" = mkHost name [ ];
+        "${name}-install" = mkHost name [
+          disko.nixosModules.disko
+          ./hosts/${name}/disko.nix
+        ];
+      };
     in
     {
-      # System that is already installed (uses hosts/<host>/hardware-configuration.nix)
-      nixosConfigurations.t420 = mkHost "t420" [ ];
-      # Clean install with disko (used by install.sh)
-      nixosConfigurations.t420-install = mkHost "t420" [
-        disko.nixosModules.disko
-        ./hosts/t420/disko.nix
-      ];
-
-      # For another machine: create hosts/<name>/ and add it here:
-      # nixosConfigurations.<name> = mkHost "<name>" [ ];
+      nixosConfigurations =
+        lib.foldl' (acc: name: acc // perHost name) { } (lib.attrNames hosts);
     };
 }

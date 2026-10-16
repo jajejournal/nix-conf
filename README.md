@@ -41,8 +41,10 @@ Press **Super + ç** at any time to open the shortcuts cheatsheet (`home/shortcu
 
 ```
 nix-conf/
-├── flake.nix                  # user + hosts
-├── install.sh                 # fresh install: disk picker + disko + nixos-install
+├── flake.nix                  # user; machines are auto-detected from hosts/
+├── install.sh                 # fresh install on any machine (disko + nixos-install)
+├── new-host.sh                # create/refresh a machine folder in hosts/
+├── templates/host/            # template for a new machine (default.nix, disko.nix)
 ├── modules/                   # generic (works on any machine)
 │   ├── common.nix             # network, audio, bluetooth, nix, user
 │   ├── desktop.nix            # X11 + i3 + fonts + polkit/portal
@@ -67,8 +69,12 @@ nix-conf/
 
 | Output | Use |
 | --- | --- |
-| `.#t420` | An already installed NixOS system (daily use) |
-| `.#t420-install` | Fresh install with disko, used by `install.sh` |
+| `.#<name>` | An already installed system (daily use) |
+| `.#<name>-install` | Fresh install with disko (used by `install.sh`) |
+
+Every folder in `hosts/` that contains a `default.nix` is picked up
+automatically, so you never edit `flake.nix` to add a machine. On my T420,
+`<name>` is `t420`.
 
 ## Installation
 
@@ -78,37 +84,40 @@ nix-conf/
 nix-shell -p git openssl
 git clone https://github.com/jajejournal/nix-conf && cd nix-conf
 
-# Reuse this machine's hardware config
-cp /etc/nixos/hardware-configuration.nix hosts/t420/
-git add -f hosts/t420/hardware-configuration.nix
+# Create this machine's folder (hostname, boot loader, hardware config)
+sudo ./new-host.sh <name>
 
 # Password hash (never stored in the repo)
 sudo mkdir -p /etc/secrets
 openssl passwd -6 | sudo tee /etc/secrets/password-hash >/dev/null
 sudo chmod 600 /etc/secrets/password-hash
 
-sudo nixos-rebuild switch --flake .#t420
+sudo nixos-rebuild switch --flake .#<name>
 ```
 
 ### Option B: fresh install from the minimal ISO (erases the whole disk)
 
 1. Boot the NixOS minimal ISO, then `sudo loadkeys es` and connect to the network.
 2. `git clone https://github.com/jajejournal/nix-conf && cd nix-conf`
-3. In `hosts/t420/disko.nix`, set `device` to your disk (`ls -l /dev/disk/by-id/`).
-4. `sudo ./install.sh`
+3. `sudo ./install.sh <name>`   (any name for this machine, e.g. `t420`)
 
-The script asks for the password, generates the hardware config, checks that the configuration evaluates **before** touching the disk, asks you to type `YES`, partitions with disko (LUKS passphrase prompt), installs, and copies the repo to `~/nix-conf`.
+The script creates `hosts/<name>/`, detects the hardware, asks for the disk and
+the password, checks that the configuration evaluates **before** touching the
+disk, asks you to type `YES`, partitions with disko (LUKS passphrase prompt),
+installs, and copies the repo to `~/nix-conf`.
 
 After rebooting, log in and run `startx`.
 
-> LUKS is controlled by `useLuks` in `hosts/t420/disko.nix` (on by default). Only fresh installs with `install.sh` are encrypted; Option A keeps whatever the existing system has.
+> LUKS is controlled by `useLuks` in `hosts/<name>/disko.nix` (on by default).
+> Only fresh installs with `install.sh` are encrypted; Option A keeps whatever
+> the existing system has.
 
 ## Daily use
 
 ```sh
 cd ~/nix-conf
-sudo nixos-rebuild switch --flake .#t420   # apply changes
-nix flake update                           # update inputs (then rebuild)
+sudo nixos-rebuild switch --flake .#<name>   # apply changes (on my T420: .#t420)
+nix flake update                             # update inputs (then rebuild)
 git add -A && git commit && git push
 ```
 
@@ -152,20 +161,24 @@ Debuggers: Python (debugpy) and Go (dlv).
 
 ## Another machine
 
-Shared config lives in `modules/`; only machine-specific bits live in `hosts/<name>/`.
+Adding a machine is almost automatic — `new-host.sh` copies `templates/host/`,
+generates that machine's `hardware-configuration.nix` and stages it with git, and
+`flake.nix` picks it up from `hosts/` on its own:
 
-1. `mkdir -p hosts/<name> && cp hosts/t420/disko.nix hosts/<name>/`
-2. `nixos-generate-config --show-hardware-config > hosts/<name>/hardware-configuration.nix`
-3. Create `hosts/<name>/default.nix` (hostname, boot loader, GPU). Reuse an
-   `inputs.nixos-hardware.nixosModules.<your-model>` module when available.
-4. Add to `flake.nix`:
-   ```nix
-   nixosConfigurations.<name> = mkHost "<name>" [ ];
-   ```
-   For a fresh install, also add a `.<name>-install` output with disko.
+```sh
+git clone https://github.com/jajejournal/nix-conf && cd nix-conf
+sudo ./new-host.sh <name>             # create hosts/<name>/
+sudo nixos-rebuild switch --flake .#<name>
+```
 
-> **BIOS (no UEFI):** systemd-boot needs UEFI. For BIOS use GRUB and add a
-> `{ size = "1M"; type = "EF02"; }` partition to that host's `disko.nix`.
+For a fresh install, just run `sudo ./install.sh <name>` from the ISO instead.
+
+Then tune the machine-specific bits in `hosts/<name>/default.nix` if you want
+(boot loader, GPU, `inputs.nixos-hardware.nixosModules.<your-model>`).
+
+> **BIOS (no UEFI):** systemd-boot needs UEFI. For BIOS edit
+> `hosts/<name>/default.nix` to use GRUB and add a `{ size = "1M"; type = "EF02"; }`
+> partition to `hosts/<name>/disko.nix`.
 
 ## OpenCode (V2)
 
@@ -198,10 +211,11 @@ No passwords or keys are stored in this repo. User and root passwords are read f
 
 ## TODO
 
-Not implemented yet; planned for when I have another laptop:
+Roadmap:
 
 - [x] Try not to use the translator so much.
 - [x] One folder per machine under `hosts/<name>/`
 - [x] `install.sh` with disk selection
+- [x] Install on any machine without editing `flake.nix` (auto-detected hosts)
 - [ ] "Lite" profile for low-RAM machines
 - [x] Add screenshots to the README
