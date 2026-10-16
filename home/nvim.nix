@@ -6,7 +6,7 @@
     viAlias = true;
     vimAlias = true;
     plugins = with pkgs.vimPlugins; [
-      material-nvim
+      github-nvim-theme
       (nvim-treesitter.withAllGrammars)
       nvim-lspconfig
       nvim-cmp
