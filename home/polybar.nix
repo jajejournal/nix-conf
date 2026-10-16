@@ -143,7 +143,7 @@ in
 
       "module/backlight" = {
         type = "internal/backlight";
-        card = "acpi_video0";
+        # card = "acpi_video0"; # si se omite, polybar autodetecta el backlight
         format = "<label>";
         label = "${col t.accent (i "f185")} %percentage%%";
       };

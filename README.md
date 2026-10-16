@@ -1,6 +1,6 @@
 # nix-conf
 
-My NixOS 26.05 setup for a ThinkPad T420: **flakes + home-manager + disko**, with an **i3** desktop on X11 (started with `startx`, no display manager). Pure black theme with Material Ocean accents, all driven from a single file.
+My NixOS 26.05 setup: **flakes + home-manager + disko**, with an **i3** desktop on X11 (started with `startx`, no display manager). Pure black theme with Material Ocean accents. Shared config lives in `modules/`; per-machine bits in `hosts/<name>/`, so it can run on more than one laptop.
 
 ## Screenshots
 
@@ -40,11 +40,15 @@ Press **Super + ç** at any time to open the shortcuts cheatsheet (`home/shortcu
 
 ```
 nix-conf/
-├── flake.nix
-├── install.sh                 # fresh install: disko + nixos-install
-├── hosts/t420/
-│   ├── default.nix
-│   ├── disko.nix              # disk layout (used only by t420-install)
+├── flake.nix                  # user + hosts
+├── install.sh                 # fresh install: disk picker + disko + nixos-install
+├── modules/                   # generic (works on any machine)
+│   ├── common.nix             # network, audio, bluetooth, nix, user
+│   ├── desktop.nix            # X11 + i3 + fonts + polkit/portal
+│   └── opencode.nix           # OpenCode V2 (disabled by default)
+├── hosts/<name>/              # per-machine only
+│   ├── default.nix            # hostname, boot loader, GPU
+│   ├── disko.nix              # disk layout (device = PONER_DISCO)
 │   └── hardware-configuration.nix
 ├── home/
 │   ├── default.nix
@@ -53,7 +57,7 @@ nix-conf/
 │   ├── nvim.nix  nvim.lua
 │   └── shortcuts.txt
 └── assets/
-    └──screenshots...
+    └── screenshots...
 
 ```
 
@@ -112,6 +116,9 @@ Nix flakes only see files tracked by git, so run `git add` on new files before r
 
 - **Colors and fonts:** edit `home/theme.nix`. i3, polybar, alacritty, rofi, dunst, yazi, zathura and tmux all follow it.
 - **Programs:** add packages in `home/apps.nix` (terminal tools) or `home/default.nix`.
+- **System (generic):** `modules/common.nix` and `modules/desktop.nix`.
+- **Per machine:** `hosts/<name>/default.nix` (hostname, boot loader, GPU).
+- **User:** set `user` in `flake.nix`.
 - **Neovim:** plugins and language servers in `home/nvim.nix`, behavior in `home/nvim.lua`. LSP servers and formatters come from Nix, so there is no Mason.
 - **Shortcuts:** keep `home/shortcuts.txt` in sync when you change keybindings.
 
@@ -121,15 +128,54 @@ Leader key is `Space`.
 
 | Keys | Action |
 | --- | --- |
+| `<leader>e` / `<leader>fe` | File tree sidebar (neo-tree) / focus it |
+| `-` | Oil (edit the current folder) |
 | `<leader>ff` / `fg` / `fb` | Find files / search text / buffers |
-| `-` | File explorer (oil) |
-| `gd` / `K` | Go to definition / hover docs |
+| `<leader>gg` / `gn` | lazygit / neogit (git panel) |
+| `<C-\>` or `<leader>tt` | Terminal inside Neovim (toggleterm) |
+| `<leader>th` / `tv` | Terminal bottom / right |
+| `<F5>` | Start/continue debugging |
+| `<F10>` `<F11>` `<F12>` | Step over / into / out |
+| `<leader>db` / `du` / `dr` | Breakpoint / DAP UI / DAP REPL |
+| `gd` / `gr` / `gi` / `K` | Definition / references / implementations / hover |
 | `<leader>rn` / `ca` | Rename / code actions |
 | `<leader>cf` | Format file (also automatic on save) |
-| `<leader>xx` / `xd` | Project / file diagnostics (trouble) |
+| `<leader>xx` / `xd` / `xs` | Project / file / symbols (trouble) |
 | `<leader>on` / `of` / `od` | New note / find note / today's note |
 
 Languages with LSP: Python, JS/TS, Java, SQL, Go, C/C++, Rust, Nix, Lua, Bash, HTML/CSS/JSON, YAML, Markdown.
+Debuggers: Python (debugpy) and Go (dlv).
+
+## Another machine
+
+Shared config lives in `modules/`; only machine-specific bits live in `hosts/<name>/`.
+
+1. `mkdir -p hosts/<name> && cp hosts/t420/disko.nix hosts/<name>/`
+2. `nixos-generate-config --show-hardware-config > hosts/<name>/hardware-configuration.nix`
+3. Create `hosts/<name>/default.nix` (hostname, boot loader, GPU). Reuse an
+   `inputs.nixos-hardware.nixosModules.<your-model>` module when available.
+4. Add to `flake.nix`:
+   ```nix
+   nixosConfigurations.<name> = mkHost "<name>" [ ];
+   ```
+   For a fresh install, also add a `.<name>-install` output with disko.
+
+> **BIOS (no UEFI):** systemd-boot needs UEFI. For BIOS use GRUB and add a
+> `{ size = "1M"; type = "EF02"; }` partition to that host's `disko.nix`.
+
+## OpenCode (V2)
+
+`nixpkgs` only ships OpenCode 1.x. V2 lives in the `dev` branch of
+`anomalyco/opencode`, which publishes a flake. `modules/opencode.nix` is
+included but **disabled by default** (it builds from source). Enable it by
+uncommenting the line in `flake.nix`:
+
+```nix
+# ./modules/opencode.nix
+```
+
+Then `nix flake lock && sudo nixos-rebuild switch --flake .#t420`. To try it
+without touching the system: `nix run github:anomalyco/opencode/dev`.
 
 ## Secrets
 
@@ -149,7 +195,7 @@ No passwords or keys are stored in this repo. User and root passwords are read f
 Not implemented yet; planned for when I have another laptop:
 
 - [x] Try not to use the translator so much.
-- [ ] One folder per machine under `hosts/<name>/`
-- [ ] `install.sh` with hardware detection and disk selection
+- [x] One folder per machine under `hosts/<name>/`
+- [x] `install.sh` with disk selection
 - [ ] "Lite" profile for low-RAM machines
 - [x] Add screenshots to the README

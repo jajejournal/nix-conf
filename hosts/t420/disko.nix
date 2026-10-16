@@ -1,4 +1,5 @@
-# disk: GPT, ESP 1G (/boot) + ext4 root (with LUKS if useLuks = true)
+# Layout de disco: GPT, ESP 1G (/boot) + raíz ext4 (con LUKS si useLuks = true).
+# install.sh sustituye PONER_DISCO por el disco que elijas.
 { lib, ... }:
 let
   useLuks = true;
@@ -12,8 +13,8 @@ in
 {
   disko.devices.disk.main = {
     type = "disk";
-    # Change 2M332LA167DJ: ls -l /dev/disk/by-id/ | grep -i ADATA
-    device = "/dev/disk/by-id/ata-ADATA_SU650_2M332LA167DJ";
+    # Manual: ls -l /dev/disk/by-id/  y pon aquí el disco.
+    device = "PONER_DISCO";
     content = {
       type = "gpt";
       partitions = {
@@ -33,7 +34,7 @@ in
             if useLuks then {
               type = "luks";
               name = "cryptroot";
-              settings.allowDiscards = true; # TRIM on SSD
+              settings.allowDiscards = true; # TRIM en SSD
               content = rootContent;
             } else rootContent;
         };

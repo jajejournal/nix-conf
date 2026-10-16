@@ -1,5 +1,5 @@
 {
-  description = "manssell's NixOS - ThinkPad T420 (i3 + startx)";
+  description = "NixOS: i3 + home-manager + disko (config portable entre máquinas)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
@@ -11,28 +11,51 @@
       url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Ajustes automáticos por modelo de portátil (t420, x220, etc.)
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # OpenCode V2 (rama dev = 2.x). NO le ponemos follows para no forzar
+    # su nixpkgs-unstable contra el nuestro (evita romper su build).
+    opencode.url = "github:anomalyco/opencode/dev";
   };
 
-  outputs = { self, nixpkgs, home-manager, disko, ... }:
+  outputs = { self, nixpkgs, home-manager, disko, nixos-hardware, ... }@inputs:
     let
-      common = [
-        ./hosts/t420
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.backupFileExtension = "backup";
-          home-manager.users.manssell = import ./home;
-        }
-      ];
-      mk = extra: nixpkgs.lib.nixosSystem {
+      # ⚠️  Cambia aquí tu usuario y cámbialo también en install.sh
+      user = "manssell";
+
+      mkHost = host: extraModules: nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        modules = common ++ extra;
+        specialArgs = { inherit inputs user; };
+        modules = [
+          ./modules/common.nix
+          ./modules/desktop.nix
+          # ./modules/opencode.nix   # <- descomenta para instalar OpenCode V2 (compila desde fuente)
+          ./hosts/${host}
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.backupFileExtension = "backup";
+            home-manager.extraSpecialArgs = { inherit inputs user; };
+            home-manager.users.${user} = import ./home;
+          }
+        ] ++ extraModules;
       };
-    in {
-      # system already installed: use hosts/t420/hardware-configuration.nix (copied from /etc/nixos)
-      nixosConfigurations.t420 = mk [ ];
-      # Fresh reinstall with disko (install.sh)
-      nixosConfigurations.t420-install = mk [ disko.nixosModules.disko ./hosts/t420/disko.nix ];
+    in
+    {
+      # Sistema ya instalado (usa hosts/<host>/hardware-configuration.nix)
+      nixosConfigurations.t420 = mkHost "t420" [ ];
+      # Instalación limpia con disko (lo usa install.sh)
+      nixosConfigurations.t420-install = mkHost "t420" [
+        disko.nixosModules.disko
+        ./hosts/t420/disko.nix
+      ];
+
+      # Para otra máquina: crea hosts/<nombre>/ y añade aquí:
+      # nixosConfigurations.<nombre> = mkHost "<nombre>" [ ];
     };
 }
