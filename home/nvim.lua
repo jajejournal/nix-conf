@@ -20,10 +20,9 @@ o.splitright = true
 o.splitbelow = true
 o.mouse = "a"
 
--- Theme: Material "deep ocean" on pure black
-vim.g.material_style = "deep ocean"
+-- Theme: GitHub Dark (background forced to pure black below)
 pcall(function()
-	require("material").setup({ disable = { background = true } })
+	require("github-theme").setup({})
 end)
 local function black()
 	for _, g in ipairs({ "Normal", "NormalNC", "NormalFloat", "SignColumn", "EndOfBuffer", "LineNr", "FloatBorder" }) do
@@ -33,7 +32,7 @@ local function black()
 	end
 end
 vim.api.nvim_create_autocmd("ColorScheme", { callback = black })
-pcall(vim.cmd.colorscheme, "material")
+pcall(vim.cmd.colorscheme, "github_dark_default")
 black()
 
 -- Syntax highlighting (treesitter)
@@ -146,8 +145,8 @@ end
 
 -- Start screen
 vim.opt.shortmess:append("I")
-vim.api.nvim_set_hl(0, "AlphaHeader", { fg = "#82aaff" })
-vim.api.nvim_set_hl(0, "AlphaFooter", { fg = "#546e7a", italic = true })
+vim.api.nvim_set_hl(0, "AlphaHeader", { fg = "#58a6ff" })
+vim.api.nvim_set_hl(0, "AlphaFooter", { fg = "#8b949e", italic = true })
 local ok_alpha = pcall(function()
 	local d = require("alpha.themes.dashboard")
 	d.section.header.val = {
