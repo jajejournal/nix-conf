@@ -26,7 +26,8 @@ My NixOS 26.05 setup: **flakes + home-manager + disko**, with an **i3** desktop 
 | Bar | polybar (top), clickable modules |
 | Terminal / shell | alacritty, fish, starship, zoxide, fzf, eza, bat |
 | Launcher / notifications | rofi, dunst |
-| Compositor | picom |
+| Clipboard | clipmenu — history of everything you copied, `Super + V` |
+| Compositor | picom — rounded corners + soft shadows |
 | Editor | Neovim: LSP, completion, format on save (conform), diagnostics panel (trouble), start screen (alpha) |
 | Notes | Neovim + obsidian.nvim, vault in `~/Notes` |
 | Files / media | yazi, zathura, mpv, imv, cmus |
@@ -115,6 +116,7 @@ Nix flakes only see files tracked by git, so run `git add` on new files before r
 ## Customizing
 
 - **Colors and fonts:** edit `home/theme.nix`. i3, polybar, alacritty, rofi, dunst, yazi, zathura and tmux all follow it.
+- **Bar:** modules in `home/polybar.nix`. The bar shows only the time; clicking it opens a live clock + calendar (press any key to close).
 - **Programs:** add packages in `home/apps.nix` (terminal tools) or `home/default.nix`.
 - **System (generic):** `modules/common.nix` and `modules/desktop.nix`.
 - **Per machine:** `hosts/<name>/default.nix` (hostname, boot loader, GPU).

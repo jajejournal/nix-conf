@@ -10,7 +10,7 @@
   home.packages = with pkgs; [
     brightnessctl wireplumber xev
     maim xclip libnotify pavucontrol
-    btop fastfetch yad
+    btop fastfetch yad clipmenu
   ];
 
   # startx -> ~/.xinitrc -> sesión de home-manager (~/.xsession)

@@ -9,7 +9,24 @@ let
   popup = prog: "${term} --class popup -e ${prog}";
   btop = popup "${pkgs.btop}/bin/btop";
   nmCmd = popup "/run/current-system/sw/bin/nmtui";
-  calendar = "${pkgs.yad}/bin/yad --calendar --title=Calendar --no-buttons --close-on-unfocus";
+  # Reloj + calendario en vivo (se abre al hacer click en la hora de la barra).
+  # Es una ventana flotante de alacritty (clase "clockcal", ver i3.nix).
+  clockcal = pkgs.writeShellScript "clockcal" ''
+    export PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.util-linux ]}
+    esc=$(printf '\033')
+    blue="$esc[1;38;2;88;166;255m"   # #58a6ff
+    dim="$esc[38;2;139;148;158m"     # #8b949e
+    off="$esc[0m"
+    while :; do
+      printf '\033[H\033[2J\n\n'
+      printf '        %s%s%s\n' "$blue" "$(date '+%H:%M:%S')" "$off"
+      printf '        %s%s%s\n\n' "$dim" "$(date '+%A, %d %B %Y')" "$off"
+      cal --color=always
+      # Se refresca cada segundo; pulsa cualquier tecla para cerrar
+      IFS= read -rsn1 -t 1 && break
+    done
+  '';
+  clockcalCmd = "${term} --class clockcal -e ${clockcal}";
 
   batteryInfo = pkgs.writeShellScript "battery-info" ''
     export PATH=${lib.makeBinPath [ pkgs.coreutils ]}
@@ -70,7 +87,7 @@ in
         width = "100%";
         height = 28;
         fixed-center = true;
-        background = t.bg;
+        background = t.bgAlt;
         foreground = t.fg;
         line-size = 2;
         padding-left = 1;
@@ -112,13 +129,12 @@ in
         label-urgent-padding = 1;
       };
 
-      # Click: calendar
+      # En la barra SOLO la hora. Al hacer click: reloj + calendario.
       "module/date" = {
         type = "internal/date";
         interval = 1;
-        date = "%a %d %b";
         time = "%H:%M";
-        label = act calendar "${col t.accent (i "f073")} %date%   ${col t.accent (i "f017")} %time%";
+        label = act clockcalCmd "${col t.accent (i "f017")} %time%";
       };
 
       # Click: btop

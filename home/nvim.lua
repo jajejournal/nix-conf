@@ -40,6 +40,10 @@ o.mouse = "a"
 o.wrap = false
 o.showmode = false
 o.completeopt = { "menu", "menuone", "noselect" }
+-- Bordes redondeados en ventanas flotantes (Neovim 0.11+)
+if vim.fn.has("nvim-0.11") == 1 then
+	vim.o.winborder = "rounded"
+end
 
 -- ------------------------------------------------------------------- Tema ---
 require("github-theme").setup({
@@ -85,6 +89,11 @@ require("github-theme").setup({
 			FloatBorder = { fg = "#8b949e", bg = "#1a1a1a" },
 			Pmenu = { fg = "#e6edf3", bg = "#1a1a1a" },
 			PmenuSel = { fg = "#000000", bg = "#ffffff" },
+			PmenuKind = { fg = "#58a6ff", bg = "#1a1a1a" },
+			PmenuSbar = { bg = "#1a1a1a" },
+			PmenuThumb = { bg = "#8b949e" },
+			WinSeparator = { fg = "#1a1a1a", bg = "#000000" },
+			CursorLine = { bg = "#0a0a0a" },
 		},
 	},
 })

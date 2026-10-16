@@ -7,6 +7,9 @@ let
   powermenu = ''rofi -show power -modi "power:${pkgs.rofi-power-menu}/bin/rofi-power-menu"'';
   shot = "${pkgs.maim}/bin/maim";
   clip = "${pkgs.xclip}/bin/xclip -selection clipboard -t image/png";
+  # Portapapeles: clipmenud guarda el historial, clipmenu lo muestra en rofi
+  clipmenu = "${pkgs.clipmenu}/bin/clipmenu";
+  rofi = "${pkgs.rofi}/bin/rofi";
 
   # Terminal apps that have their own class so i3 sends them to their workspace
   term = "${pkgs.alacritty}/bin/alacritty";
@@ -40,6 +43,7 @@ in
           # Windows that open floating (small & centered)
           commands = [
             { command = "floating enable, resize set 760 460, move position center"; criteria = { class = "^popup$"; }; }
+            { command = "floating enable, resize set 400 340, move position center"; criteria = { class = "^clockcal$"; }; }
             { command = "floating enable, resize set 960 620, move position center"; criteria = { class = "^cheatsheet$"; }; }
             { command = "floating enable, resize set 860 520, move position center"; criteria = { class = "(?i)pavucontrol"; }; }
             { command = "floating enable, resize set 700 450, move position center"; criteria = { class = "(?i)blueman"; }; }
@@ -69,6 +73,7 @@ in
 
         startup = [
           { command = "systemctl --user restart polybar"; always = true; notification = false; }
+          { command = "${pkgs.clipmenu}/bin/clipmenud"; always = true; notification = false; }
         ];
 
         keybindings = lib.mkOptionDefault {
@@ -82,6 +87,9 @@ in
           "${mod}+ccedilla" = "exec alacritty --class cheatsheet -e less ${config.xdg.configHome}/shortcuts.txt";
           "${mod}+Escape" = "exec ${pkgs.i3lock}/bin/i3lock -c 000000";
           "${mod}+Shift+e" = "exec ${powermenu}";
+
+          # Portapapeles: historial de lo copiado (Super+V)
+          "${mod}+v" = "exec --no-startup-id env CM_LAUNCHER=${rofi} ${clipmenu}";
 
           # Vim-like focus & movement (h j k l)
           "${mod}+h" = "focus left";

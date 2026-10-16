@@ -31,6 +31,7 @@
    Mod + ç ................ this shortcuts menu
    Mod + Esc .............. lock screen
    Mod + Shift + e ........ power / reboot / lock / logout menu
+   Mod + v ................ clipboard history (everything you copied)
    Print .................. screenshot area -> clipboard
    Shift + Print .......... screenshot area -> save to ~/Pictures
 
@@ -88,7 +89,8 @@
 ================================================================================
 
    Workspaces (icons) ........ click = go to that workspace
-   Time / calendar ........... click = floating calendar
+   Time (the clock) .......... click = live clock + calendar
+                                (press any key to close it)
    CPU and RAM ............... click = floating btop
    Volume .................... click = audio mixer (pavucontrol)
    Bluetooth ................ left click = bluetooth manager
