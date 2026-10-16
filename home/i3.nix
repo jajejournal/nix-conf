@@ -46,6 +46,7 @@ in
             { command = "floating enable, move position center"; criteria = { class = "^Yad$"; }; }
             { command = "floating enable"; criteria = { window_role = "^(pop-up|dialog|task_dialog|About)$"; }; }
             { command = "floating enable, sticky enable"; criteria = { title = "^Picture-in-Picture$"; }; }
+            { command = "floating enable, move position center"; criteria = { class = "^mpv$"; }; }
             # Each program opens in its workspace (bar icons)
             { command = toWs "2"; criteria = { class = "(?i)^firefox$"; }; }
             { command = toWs apps.code.ws;  criteria = { class = "^code$"; }; }
