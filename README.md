@@ -47,13 +47,13 @@ nix-conf/
 │   ├── disko.nix              # disk layout (used only by t420-install)
 │   └── hardware-configuration.nix
 ├── home/
-|   ├── default.nix
-|   ├── theme.nix
-|   ├── i3.nix  polybar.nix
-|   ├── nvim.nix  nvim.lua
-|   └── shortcuts.txt
+│   ├── default.nix
+│   ├── theme.nix
+│   ├── i3.nix  polybar.nix
+│   ├── nvim.nix  nvim.lua
+│   └── shortcuts.txt
 └── assets/
-|   └──screenshots...
+    └──screenshots...
 
 ```
 
