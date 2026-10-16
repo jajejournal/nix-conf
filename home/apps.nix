@@ -6,7 +6,7 @@ let t = import ./theme.nix; in
     # Documents and text
     pandoc glow poppler-utils            # glow = markdown in terminal; pdftotext/pdftoppm
     # Images
-    imv chafa                            # imv = lightweight image viewer; chafa = terminal image viewer
+    imv chafa ueberzugpp                 # imv = lightweight image viewer; chafa = terminal image viewer
     # Audio / video
     cmus yt-dlp ffmpeg
     # Files
@@ -48,6 +48,8 @@ let t = import ./theme.nix; in
       keep-open = true;
       save-position-on-quit = true;
       background-color = t.bg;
+      autofit-larger = "760x460";     # same size as the floating terminal
+      image-display-duration = "inf";
     };
   };
 
@@ -95,10 +97,10 @@ let t = import ./theme.nix; in
       "video/x-msvideo" = "mpv.desktop";
       "audio/mpeg" = "mpv.desktop";
       "audio/flac" = "mpv.desktop";
-      "image/png" = "imv.desktop";
-      "image/jpeg" = "imv.desktop";
-      "image/gif" = "imv.desktop";
-      "image/webp" = "imv.desktop";
+      "image/png" = "mpv.desktop";
+      "image/jpeg" = "mpv.desktop";
+      "image/gif" = "mpv.desktop";
+      "image/webp" = "mpv.desktop";
       "text/html" = "firefox.desktop";
       "x-scheme-handler/http" = "firefox.desktop";
       "x-scheme-handler/https" = "firefox.desktop";
