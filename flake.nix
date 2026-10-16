@@ -1,5 +1,5 @@
 {
-  description = "NixOS: i3 + home-manager + disko (config portable entre máquinas)";
+  description = "NixOS: i3 + home-manager + disko (config that works across machines)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
@@ -11,22 +11,22 @@
       url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Ajustes automáticos por modelo de portátil (t420, x220, etc.)
+    # Automatic tweaks per laptop model (t420, x220, etc.)
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # OpenCode V2 (rama dev = 2.x). DESACTIVADO por ahora: se descarga el repo
-    # entero aunque el módulo no se use, lo que hace lento el instalar desde el
-    # ISO. Descomenta estas líneas (y ./modules/opencode.nix más abajo) cuando
-    # quieras usarlo.
+    # OpenCode V2 (dev branch = 2.x). DISABLED for now: it downloads the whole
+    # repo even when the module is not used, which makes installing from the
+    # ISO slow. Uncomment this line (and ./modules/opencode.nix below) when you
+    # want to use it.
     # opencode.url = "github:anomalyco/opencode/dev";
   };
 
   outputs = { self, nixpkgs, home-manager, disko, nixos-hardware, ... }@inputs:
     let
-      # ⚠️  Cambia aquí tu usuario y cámbialo también en install.sh
+      # ⚠️  Change your username here, and also in install.sh
       user = "manssell";
 
       mkHost = host: extraModules: nixpkgs.lib.nixosSystem {
@@ -35,7 +35,7 @@
         modules = [
           ./modules/common.nix
           ./modules/desktop.nix
-          # ./modules/opencode.nix   # <- descomenta para instalar OpenCode V2 (compila desde fuente)
+          # ./modules/opencode.nix   # <- uncomment to install OpenCode V2 (builds from source)
           ./hosts/${host}
           home-manager.nixosModules.home-manager
           {
@@ -49,15 +49,15 @@
       };
     in
     {
-      # Sistema ya instalado (usa hosts/<host>/hardware-configuration.nix)
+      # System that is already installed (uses hosts/<host>/hardware-configuration.nix)
       nixosConfigurations.t420 = mkHost "t420" [ ];
-      # Instalación limpia con disko (lo usa install.sh)
+      # Clean install with disko (used by install.sh)
       nixosConfigurations.t420-install = mkHost "t420" [
         disko.nixosModules.disko
         ./hosts/t420/disko.nix
       ];
 
-      # Para otra máquina: crea hosts/<nombre>/ y añade aquí:
-      # nixosConfigurations.<nombre> = mkHost "<nombre>" [ ];
+      # For another machine: create hosts/<name>/ and add it here:
+      # nixosConfigurations.<name> = mkHost "<name>" [ ];
     };
 }

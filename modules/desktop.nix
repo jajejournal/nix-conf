@@ -1,7 +1,7 @@
-# Escritorio X11 (i3 + startx). Genérico: no menciona hardware concreto.
+# X11 desktop (i3 + startx). Generic: it does not mention any specific hardware.
 { config, pkgs, lib, ... }:
 {
-  # --- X11 con startx, sin gestor de sesión ---
+  # --- X11 with startx, no display manager ---
   services.xserver = {
     enable = true;
     xkb = {
@@ -15,11 +15,11 @@
     touchpad = { tapping = true; naturalScrolling = false; };
   };
 
-  # --- Gráficos ---
+  # --- Graphics ---
   hardware.graphics.enable = true;
   services.udev.packages = [ pkgs.brightnessctl ];
 
-  # --- Fuentes ---
+  # --- Fonts ---
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
     inter
@@ -34,9 +34,9 @@
   programs.dconf.enable = true;
   programs.i3lock.enable = true;
 
-  # --- Integración con el escritorio (opcional pero muy útil) ---
-  security.polkit.enable = true;         # diálogos de autenticación gráficos
-  services.gvfs.enable = true;           # papelera y montaje en apps GTK
+  # --- Desktop integration (optional but very useful) ---
+  security.polkit.enable = true;         # graphical authentication dialogs
+  services.gvfs.enable = true;           # trash and mounting in GTK apps
   xdg.portal = {
     enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];

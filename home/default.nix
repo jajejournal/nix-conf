@@ -1,4 +1,4 @@
-# Home-manager: usa el usuario que viene del flake (user).
+# Home-manager: uses the user that comes from the flake (user).
 { config, pkgs, lib, user, ... }:
 {
   imports = [ ./i3.nix ./polybar.nix ./terminal.nix ./desktop.nix ./nvim.nix ./apps.nix ];
@@ -13,11 +13,11 @@
     btop fastfetch yad clipmenu
   ];
 
-  # startx -> ~/.xinitrc -> sesión de home-manager (~/.xsession)
+  # startx -> ~/.xinitrc -> home-manager session (~/.xsession)
   home.file.".xinitrc".text = ''
     exec "$HOME/.xsession"
   '';
   home.file."Pictures/.keep".text = "";
   xdg.configFile."shortcuts.txt".source = ./shortcuts.txt;
-  home.file."Notes/.keep".text = ""; # vault de notas (Markdown)
+  home.file."Notes/.keep".text = ""; # notes vault (Markdown)
 }

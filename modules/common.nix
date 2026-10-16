@@ -1,5 +1,5 @@
-# Configuración genérica del sistema (sirve para CUALQUIER máquina).
-# Lo específico de cada portátil va en hosts/<nombre>/default.nix
+# Generic system configuration (works on ANY machine).
+# Machine-specific bits live in hosts/<name>/default.nix
 { config, pkgs, lib, user, ... }:
 {
   # --- Nix ---
@@ -14,21 +14,21 @@
     options = "--delete-older-than 14d";
   };
 
-  # --- Red / idioma ---
-  # Usa mkDefault para poder sobreescribirlo desde el host con lib.mkForce.
+  # --- Network / language ---
+  # mkDefault is used so a host can override it with lib.mkForce.
   networking.networkmanager.enable = true;
   time.timeZone = lib.mkDefault "America/Bogota";
   i18n.defaultLocale = lib.mkDefault "en_US.UTF-8";
   console.keyMap = lib.mkDefault "es";
-  console.earlySetup = true; # teclado es para la contraseña de LUKS
+  console.earlySetup = true; # Spanish keyboard for the LUKS password prompt
 
-  # --- Energía / limpieza ---
+  # --- Power / cleanup ---
   zramSwap.enable = true;
   services.fstrim.enable = true;
   services.tlp.enable = true;
   services.udisks2.enable = true;
 
-  # --- Audio y bluetooth ---
+  # --- Audio and bluetooth ---
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -39,7 +39,7 @@
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
 
-  # --- Shell y usuario ---
+  # --- Shell and user ---
   programs.fish.enable = true;
   users.mutableUsers = true;
   users.users.${user} = {
@@ -48,9 +48,9 @@
     extraGroups = [ "wheel" "networkmanager" "video" "audio" "cdrom" "optical" ];
     hashedPasswordFile = "/etc/secrets/password-hash";
   };
-  users.users.root.hashedPasswordFile = "/etc/secrets/password-hash"; # misma que el usuario
+  users.users.root.hashedPasswordFile = "/etc/secrets/password-hash"; # same as the user
 
-  # --- Paquetes base ---
+  # --- Base packages ---
   environment.systemPackages = with pkgs; [ git curl wget htop pciutils usbutils ];
 
   system.stateVersion = "26.05";

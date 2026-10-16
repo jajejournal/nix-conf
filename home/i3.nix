@@ -7,7 +7,7 @@ let
   powermenu = ''rofi -show power -modi "power:${pkgs.rofi-power-menu}/bin/rofi-power-menu"'';
   shot = "${pkgs.maim}/bin/maim";
   clip = "${pkgs.xclip}/bin/xclip -selection clipboard -t image/png";
-  # Portapapeles: clipmenud guarda el historial, clipmenu lo muestra en rofi
+  # Clipboard: clipmenud stores the history, clipmenu shows it in rofi
   clipmenu = "${pkgs.clipmenu}/bin/clipmenu";
   rofi = "${pkgs.rofi}/bin/rofi";
 
@@ -88,7 +88,7 @@ in
           "${mod}+Escape" = "exec ${pkgs.i3lock}/bin/i3lock -c 000000";
           "${mod}+Shift+e" = "exec ${powermenu}";
 
-          # Portapapeles: historial de lo copiado (Super+V)
+          # Clipboard: history of what you copied (Super+V)
           "${mod}+v" = "exec --no-startup-id env CM_LAUNCHER=${rofi} ${clipmenu}";
 
           # Vim-like focus & movement (h j k l)

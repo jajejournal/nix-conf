@@ -1,5 +1,5 @@
-# Neovim como IDE. Los plugins y los servidores LSP/formatters los instala Nix
-# (no hay Mason). El comportamiento está en home/nvim.lua
+# Neovim as an IDE. The plugins and the LSP servers/formatters are installed by
+# Nix (there is no Mason). The behavior lives in home/nvim.lua
 { pkgs, lib, ... }:
 {
   programs.neovim = {
@@ -9,17 +9,17 @@
     vimAlias = true;
 
     plugins = with pkgs.vimPlugins; [
-      # --- Tema / interfaz ---
+      # --- Theme / interface ---
       github-nvim-theme
       lualine-nvim
       nvim-web-devicons
       bufferline-nvim
-      nvim-navic            # "breadcrumbs" (ruta del símbolo) desde el LSP
+      nvim-navic            # "breadcrumbs" (symbol path) from the LSP
       indent-blankline-nvim
       which-key-nvim
       alpha-nvim
 
-      # --- Resaltado / edición de código ---
+      # --- Highlighting / code editing ---
       (nvim-treesitter.withAllGrammars)
       nvim-treesitter-textobjects
       nvim-autopairs
@@ -27,17 +27,17 @@
       nvim-surround
       flash-nvim
 
-      # --- Explorador de archivos (columna izquierda) ---
+      # --- File explorer (left column) ---
       neo-tree-nvim
-      nui-nvim          # dependencia de neo-tree
-      oil-nvim          # edición de carpetas como un buffer
+      nui-nvim          # neo-tree dependency
+      oil-nvim          # edit folders as a buffer
 
-      # --- Búsqueda ---
+      # --- Search ---
       telescope-nvim
       plenary-nvim
       telescope-fzf-native-nvim
 
-      # --- LSP + autocompletado ---
+      # --- LSP + completion ---
       nvim-lspconfig
       nvim-cmp
       cmp-nvim-lsp
@@ -52,23 +52,23 @@
       neogit
       diffview-nvim
 
-      # --- Terminal y depurador (lo que faltaba para ser IDE) ---
+      # --- Terminal and debugger (what was missing to be an IDE) ---
       toggleterm-nvim
       nvim-dap
       nvim-dap-ui
-      nvim-nio            # dependencia de nvim-dap-ui
+      nvim-nio            # nvim-dap-ui dependency
       nvim-dap-virtual-text
 
-      # --- Markdown / notas ---
+      # --- Markdown / notes ---
       obsidian-nvim
       render-markdown-nvim
 
-      # --- Diagnóstico y formato ---
+      # --- Diagnostics and formatting ---
       conform-nvim
       trouble-nvim
     ];
 
-    # Servidores LSP, formatters y depuradores (todos desde Nix).
+    # LSP servers, formatters and debuggers (all from Nix).
     extraPackages = with pkgs; [
       # LSP: Python, JS/TS, Java, SQL, Go, C/C++, Rust, Nix, Lua, Bash, web, YAML, Markdown
       pyright
@@ -94,11 +94,11 @@
       go
       rustfmt
 
-      # Depurador (DAP)
+      # Debugger (DAP)
       (python3.withPackages (ps: [ ps.debugpy ])) # Python
       delve                                      # Go
 
-      # Utilidades usadas por los plugins
+      # Utilities used by the plugins
       ripgrep
       fd
       xclip

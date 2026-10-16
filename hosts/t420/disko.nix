@@ -1,5 +1,5 @@
-# Layout de disco: GPT, ESP 1G (/boot) + raíz ext4 (con LUKS si useLuks = true).
-# install.sh sustituye PONER_DISCO por el disco que elijas.
+# Disk layout: GPT, 1G ESP (/boot) + ext4 root (with LUKS if useLuks = true).
+# install.sh replaces PUT_DISK_HERE with the disk you choose.
 { lib, ... }:
 let
   useLuks = true;
@@ -13,8 +13,8 @@ in
 {
   disko.devices.disk.main = {
     type = "disk";
-    # Manual: ls -l /dev/disk/by-id/  y pon aquí el disco.
-    device = "PONER_DISCO";
+    # Manual: ls -l /dev/disk/by-id/  and put the disk here.
+    device = "PUT_DISK_HERE";
     content = {
       type = "gpt";
       partitions = {
@@ -34,7 +34,7 @@ in
             if useLuks then {
               type = "luks";
               name = "cryptroot";
-              settings.allowDiscards = true; # TRIM en SSD
+              settings.allowDiscards = true; # TRIM on SSD
               content = rootContent;
             } else rootContent;
         };

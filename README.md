@@ -49,7 +49,7 @@ nix-conf/
 │   └── opencode.nix           # OpenCode V2 (disabled by default)
 ├── hosts/<name>/              # per-machine only
 │   ├── default.nix            # hostname, boot loader, GPU
-│   ├── disko.nix              # disk layout (device = PONER_DISCO)
+│   ├── disko.nix              # disk layout (device = PUT_DISK_HERE)
 │   └── hardware-configuration.nix
 ├── home/
 │   ├── default.nix

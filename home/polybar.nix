@@ -9,8 +9,8 @@ let
   popup = prog: "${term} --class popup -e ${prog}";
   btop = popup "${pkgs.btop}/bin/btop";
   nmCmd = popup "/run/current-system/sw/bin/nmtui";
-  # Reloj + calendario en vivo (se abre al hacer click en la hora de la barra).
-  # Es una ventana flotante de alacritty (clase "clockcal", ver i3.nix).
+  # Live clock + calendar (opens when you click the time in the bar).
+  # It is a floating alacritty window (class "clockcal", see i3.nix).
   clockcal = pkgs.writeShellScript "clockcal" ''
     export PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.util-linux ]}
     esc=$(printf '\033')
@@ -22,7 +22,7 @@ let
       printf '        %s%s%s\n' "$blue" "$(date '+%H:%M:%S')" "$off"
       printf '        %s%s%s\n\n' "$dim" "$(date '+%A, %d %B %Y')" "$off"
       cal --color=always
-      # Se refresca cada segundo; pulsa cualquier tecla para cerrar
+      # Refreshes every second; press any key to close
       IFS= read -rsn1 -t 1 && break
     done
   '';
@@ -129,7 +129,7 @@ in
         label-urgent-padding = 1;
       };
 
-      # En la barra SOLO la hora. Al hacer click: reloj + calendario.
+      # The bar shows ONLY the time. Clicking it opens: clock + calendar.
       "module/date" = {
         type = "internal/date";
         interval = 1;
@@ -159,7 +159,7 @@ in
 
       "module/backlight" = {
         type = "internal/backlight";
-        # card = "acpi_video0"; # si se omite, polybar autodetecta el backlight
+        # card = "acpi_video0"; # if omitted, polybar autodetects the backlight
         format = "<label>";
         label = "${col t.accent (i "f185")} %percentage%%";
       };

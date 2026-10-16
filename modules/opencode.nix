@@ -1,12 +1,12 @@
-# OpenCode V2 para NixOS.
+# OpenCode V2 for NixOS.
 #
-# nixpkgs solo trae OpenCode 1.x. La V2 (2.0.31) vive en la rama `dev` del
-# repo oficial `anomalyco/opencode`, que publica un flake. Aquí la usamos como
-# input (ver flake.nix: inputs.opencode.url = "github:anomalyco/opencode/dev").
+# nixpkgs only ships OpenCode 1.x. V2 (2.0.31) lives in the `dev` branch of the
+# official `anomalyco/opencode` repo, which publishes a flake. Here we use it as
+# an input (see flake.nix: inputs.opencode.url = "github:anomalyco/opencode/dev").
 #
-# Se compila desde fuente con bun, así que la primera vez tarda.
-# Si no quieres OpenCode, borra ./modules/opencode.nix de la lista de modules
-# en flake.nix.
+# It builds from source with bun, so the first time it takes a while.
+# If you don't want OpenCode, remove ./modules/opencode.nix from the module list
+# in flake.nix.
 { pkgs, inputs, ... }:
 {
   environment.systemPackages = [

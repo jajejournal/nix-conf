@@ -1,23 +1,23 @@
 -- ============================================================================
---  Neovim como IDE  ·  NixOS (home-manager)
---  Los plugins y los servidores LSP/formatters/depuradores los instala Nix
---  (ver home/nvim.nix). Aquí solo definimos el comportamiento.
+--  Neovim as an IDE  ·  NixOS (home-manager)
+--  The plugins and the LSP/formatter/debugger servers are installed by Nix
+--  (see home/nvim.nix). Here we only define the behavior.
 --
---  Teclas clave (leader = Espacio):
---    <leader>e    abrir/cerrar el árbol de carpetas (columna izquierda)
---    <leader>ff   buscar archivos        <leader>fg  buscar texto
---    <leader>gg   lazygit                <leader>gn  neogit (panel de git)
---    <C-\>        terminal flotante      <leader>tt  terminal flotante
---    <F5>         depurar/continuar      <leader>db  poner/quitar breakpoint
---    <leader>du   panel del depurador    <leader>xx  diagnóstico del proyecto
---    <leader>fe   enfocar sidebar        <leader>ld  diagnóstico de la línea
+--  Key shortcuts (leader = Space):
+--    <leader>e    open/close the file tree (left column)
+--    <leader>ff   find files           <leader>fg  search text
+--    <leader>gg   lazygit              <leader>gn  neogit (git panel)
+--    <C-\>        floating terminal    <leader>tt  floating terminal
+--    <F5>         debug/continue       <leader>db  set/remove breakpoint
+--    <leader>du   debugger panel       <leader>xx  project diagnostics
+--    <leader>fe   focus sidebar        <leader>ld  line diagnostics
 -- ============================================================================
 
 local map = vim.keymap.set
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- ---------------------------------------------------------------- Opciones ---
+-- ---------------------------------------------------------------- Options ---
 local o = vim.opt
 o.number = true
 o.relativenumber = true
@@ -40,12 +40,12 @@ o.mouse = "a"
 o.wrap = false
 o.showmode = false
 o.completeopt = { "menu", "menuone", "noselect" }
--- Bordes redondeados en ventanas flotantes (Neovim 0.11+)
+-- Rounded borders on floating windows (Neovim 0.11+)
 if vim.fn.has("nvim-0.11") == 1 then
 	vim.o.winborder = "rounded"
 end
 
--- ------------------------------------------------------------------- Tema ---
+-- ------------------------------------------------------------------- Theme ---
 require("github-theme").setup({
 	options = {
 		compile_path = vim.fn.stdpath("cache") .. "/github-theme",
@@ -105,26 +105,26 @@ vim.api.nvim_create_autocmd("FileType", {
 		pcall(vim.treesitter.start)
 	end,
 })
--- Textobjects (seleccionar funciones/clases enteras, etc.)
+-- Textobjects (select whole functions/classes, etc.)
 pcall(function()
 	require("nvim-treesitter-textobjects").setup({})
 	local ts = require("nvim-treesitter-textobjects.select")
 	map({ "x", "o" }, "af", function()
 		ts.select_textobject("@function.outer", "textobjects")
-	end, { desc = "Función exterior" })
+	end, { desc = "Outer function" })
 	map({ "x", "o" }, "if", function()
 		ts.select_textobject("@function.inner", "textobjects")
-	end, { desc = "Función interior" })
+	end, { desc = "Inner function" })
 	map({ "x", "o" }, "ac", function()
 		ts.select_textobject("@class.outer", "textobjects")
-	end, { desc = "Clase exterior" })
+	end, { desc = "Outer class" })
 	map({ "x", "o" }, "ic", function()
 		ts.select_textobject("@class.inner", "textobjects")
-	end, { desc = "Clase interior" })
+	end, { desc = "Inner class" })
 end)
 
--- =================================================== ÁRBOL DE ARCHIVOS ======
--- neo-tree: columna izquierda con carpetas (lo que pediste)
+-- ========================================================= FILE TREE ========
+-- neo-tree: left column with folders
 require("neo-tree").setup({
 	close_if_last_window = true,
 	window = { width = 34 },
@@ -133,22 +133,22 @@ require("neo-tree").setup({
 		hijack_netrw_behavior = "open_current",
 	},
 })
-map("n", "<leader>e", "<cmd>Neotree toggle<cr>", { desc = "Explorador de archivos" })
-map("n", "<leader>fe", "<cmd>Neotree focus<cr>", { desc = "Enfocar explorador" })
-map("n", "-", "<cmd>Oil<cr>", { desc = "Abrir carpeta actual (oil)" })
+map("n", "<leader>e", "<cmd>Neotree toggle<cr>", { desc = "File explorer" })
+map("n", "<leader>fe", "<cmd>Neotree focus<cr>", { desc = "Focus explorer" })
+map("n", "-", "<cmd>Oil<cr>", { desc = "Open current folder (oil)" })
 require("oil").setup()
 
--- ============================================================ BÚSQUEDA ======
+-- ============================================================= SEARCH =======
 local tb = require("telescope.builtin")
 require("telescope").setup({})
-map("n", "<leader>ff", tb.find_files, { desc = "Buscar archivos" })
-map("n", "<leader>fg", tb.live_grep, { desc = "Buscar texto" })
+map("n", "<leader>ff", tb.find_files, { desc = "Find files" })
+map("n", "<leader>fg", tb.live_grep, { desc = "Search text" })
 map("n", "<leader>fb", tb.buffers, { desc = "Buffers" })
-map("n", "<leader>fh", tb.help_tags, { desc = "Ayuda" })
-map("n", "<leader>fr", tb.oldfiles, { desc = "Recientes" })
-map("n", "<leader>/", tb.current_buffer_fuzzy_find, { desc = "Buscar en el archivo" })
+map("n", "<leader>fh", tb.help_tags, { desc = "Help" })
+map("n", "<leader>fr", tb.oldfiles, { desc = "Recent" })
+map("n", "<leader>/", tb.current_buffer_fuzzy_find, { desc = "Search in file" })
 
--- ========================================================== AUTOCOMPLETADO ==
+-- ========================================================= COMPLETION ======
 local cmp, luasnip = require("cmp"), require("luasnip")
 cmp.setup({
 	snippet = {
@@ -172,7 +172,7 @@ cmp.setup({
 	},
 })
 
--- ================================================================== LSP =====
+-- =================================================================== LSP =====
 vim.lsp.config("*", { capabilities = require("cmp_nvim_lsp").default_capabilities() })
 vim.lsp.config("lua_ls", { settings = { Lua = { diagnostics = { globals = { "vim" } } } } })
 vim.lsp.enable({
@@ -214,17 +214,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 vim.diagnostic.config({ virtual_text = true, severity_sort = true })
 
--- ================================================================== GIT =====
+-- =================================================================== GIT =====
 require("gitsigns").setup()
 require("neogit").setup({})
-map("n", "<leader>gn", "<cmd>Neogit<cr>", { desc = "Panel de git (neogit)" })
-map("n", "<leader>gd", "<cmd>Gitsigns diffthis<cr>", { desc = "Diff del archivo" })
+map("n", "<leader>gn", "<cmd>Neogit<cr>", { desc = "Git panel (neogit)" })
+map("n", "<leader>gd", "<cmd>Gitsigns diffthis<cr>", { desc = "File diff" })
 map("n", "<leader>gg", function()
 	require("toggleterm").exec("lazygit")
 end, { desc = "lazygit" })
 map("n", "<leader>gv", "<cmd>DiffviewOpen<cr>", { desc = "Diffview" })
 
--- ============================================= TERMINAL DENTRO DE NVIM ======
+-- ============================================== TERMINAL INSIDE NVIM ========
 require("toggleterm").setup({
 	size = 15,
 	open_mapping = [[<C-\>]],
@@ -232,10 +232,10 @@ require("toggleterm").setup({
 	float_opts = { border = "curved" },
 	shade_terminals = false,
 })
-map("n", "<leader>tt", "<cmd>ToggleTerm direction=float<cr>", { desc = "Terminal flotante" })
-map("n", "<leader>th", "<cmd>ToggleTerm direction=horizontal<cr>", { desc = "Terminal abajo" })
-map("n", "<leader>tv", "<cmd>ToggleTerm direction=vertical size=70<cr>", { desc = "Terminal a la derecha" })
--- Salir del modo terminal con Esc
+map("n", "<leader>tt", "<cmd>ToggleTerm direction=float<cr>", { desc = "Floating terminal" })
+map("n", "<leader>th", "<cmd>ToggleTerm direction=horizontal<cr>", { desc = "Terminal at the bottom" })
+map("n", "<leader>tv", "<cmd>ToggleTerm direction=vertical size=70<cr>", { desc = "Terminal on the right" })
+-- Leave terminal mode with Esc
 vim.api.nvim_create_autocmd("TermOpen", {
 	pattern = "term://*",
 	callback = function()
@@ -243,13 +243,13 @@ vim.api.nvim_create_autocmd("TermOpen", {
 	end,
 })
 
--- ============================================================ DEPURADOR ====
+-- ============================================================== DEBUGGER ====
 local dap = require("dap")
 local dapui = require("dapui")
 dapui.setup()
 require("nvim-dap-virtual-text").setup({})
 
--- Python (usa debugpy, instalado por Nix)
+-- Python (uses debugpy, installed by Nix)
 dap.adapters.python = {
 	type = "executable",
 	command = "python3",
@@ -259,33 +259,33 @@ dap.configurations.python = {
 	{
 		type = "python",
 		request = "launch",
-		name = "Lanzar el archivo actual",
+		name = "Launch the current file",
 		program = "${file}",
 		console = "integratedTerminal",
 	},
 }
 
--- Go (usa dlv, instalado por Nix)
+-- Go (uses dlv, installed by Nix)
 dap.adapters.go = {
 	type = "server",
 	port = "${port}",
 	executable = { command = "dlv", args = { "dap", "-l", "127.0.0.1:${port}" } },
 }
 dap.configurations.go = {
-	{ type = "go", name = "Depurar el archivo actual", request = "launch", program = "${file}" },
+	{ type = "go", name = "Debug the current file", request = "launch", program = "${file}" },
 }
 
-map("n", "<F5>", dap.continue, { desc = "Depurar / continuar" })
-map("n", "<F10>", dap.step_over, { desc = "Paso a paso (sobre)" })
-map("n", "<F11>", dap.step_into, { desc = "Entrar en la función" })
-map("n", "<F12>", dap.step_out, { desc = "Salir de la función" })
+map("n", "<F5>", dap.continue, { desc = "Debug / continue" })
+map("n", "<F10>", dap.step_over, { desc = "Step over" })
+map("n", "<F11>", dap.step_into, { desc = "Step into" })
+map("n", "<F12>", dap.step_out, { desc = "Step out" })
 map("n", "<leader>db", dap.toggle_breakpoint, { desc = "Breakpoint" })
 map("n", "<leader>dB", function()
-	dap.set_breakpoint(vim.fn.input("Condición: "))
-end, { desc = "Breakpoint condicional" })
-map("n", "<leader>dc", dap.continue, { desc = "Continuar" })
-map("n", "<leader>du", dapui.toggle, { desc = "Panel del depurador" })
-map("n", "<leader>dr", dap.repl.toggle, { desc = "REPL del depurador" })
+	dap.set_breakpoint(vim.fn.input("Condition: "))
+end, { desc = "Conditional breakpoint" })
+map("n", "<leader>dc", dap.continue, { desc = "Continue" })
+map("n", "<leader>du", dapui.toggle, { desc = "Debugger panel" })
+map("n", "<leader>dr", dap.repl.toggle, { desc = "Debugger REPL" })
 dap.listeners.after.event_initialized["dapui_config"] = function()
 	dapui.open()
 end
@@ -298,27 +298,27 @@ end
 
 -- ============================================================== BUFFERS =====
 require("bufferline").setup({})
-map("n", "<Tab>", "<cmd>BufferLineCycleNext<cr>", { desc = "Buffer siguiente" })
-map("n", "<S-Tab>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Buffer anterior" })
-map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Cerrar buffer" })
+map("n", "<Tab>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
+map("n", "<S-Tab>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Previous buffer" })
+map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Close buffer" })
 
--- ============================================================== EDITAR ======
+-- ================================================================ EDIT ======
 require("nvim-autopairs").setup()
 require("Comment").setup()
 require("nvim-surround").setup()
 require("flash").setup()
-map("n", "<leader>w", "<cmd>w<cr>", { desc = "Guardar" })
-map("n", "<leader>q", "<cmd>q<cr>", { desc = "Salir" })
+map("n", "<leader>w", "<cmd>w<cr>", { desc = "Save" })
+map("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit" })
 map("n", "<Esc>", "<cmd>nohlsearch<cr>")
 
--- ============================================================ INTERFAZ ======
+-- =========================================================== INTERFACE ======
 require("lualine").setup({
 	options = { theme = "auto", globalstatus = true },
 })
 require("ibl").setup()
 require("which-key").setup({})
 
--- ======================================================= MARKDOWN / NOTAS ==
+-- ======================================================= MARKDOWN / NOTES ==
 vim.opt.conceallevel = 2
 pcall(function()
 	require("render-markdown").setup({})
@@ -343,15 +343,15 @@ if obs_ok then
 			end
 		end
 	end
-	map("n", "<leader>on", ob("new", "ObsidianNew"), { desc = "Nueva nota" })
-	map("n", "<leader>of", ob("quick_switch", "ObsidianQuickSwitch"), { desc = "Buscar nota" })
-	map("n", "<leader>os", ob("search", "ObsidianSearch"), { desc = "Buscar en notas" })
+	map("n", "<leader>on", ob("new", "ObsidianNew"), { desc = "New note" })
+	map("n", "<leader>of", ob("quick_switch", "ObsidianQuickSwitch"), { desc = "Find note" })
+	map("n", "<leader>os", ob("search", "ObsidianSearch"), { desc = "Search notes" })
 	map("n", "<leader>ob", ob("backlinks", "ObsidianBacklinks"), { desc = "Backlinks" })
-	map("n", "<leader>ol", ob("links", "ObsidianLinks"), { desc = "Enlaces" })
-	map("n", "<leader>od", ob("today", "ObsidianToday"), { desc = "Nota de hoy" })
+	map("n", "<leader>ol", ob("links", "ObsidianLinks"), { desc = "Links" })
+	map("n", "<leader>od", ob("today", "ObsidianToday"), { desc = "Today's note" })
 end
 
--- ========================================================= PANTALLA INICIO =
+-- ========================================================== START SCREEN ===
 vim.opt.shortmess:append("I")
 vim.api.nvim_set_hl(0, "AlphaHeader", { fg = "#58a6ff" })
 vim.api.nvim_set_hl(0, "AlphaFooter", { fg = "#8b949e", italic = true })
@@ -368,20 +368,20 @@ pcall(function()
 	}
 	d.section.header.opts.hl = "AlphaHeader"
 	d.section.buttons.val = {
-		d.button("e", "   Nuevo archivo", "<cmd>ene | startinsert<CR>"),
-		d.button("f", "   Buscar archivo", "<cmd>Telescope find_files<CR>"),
-		d.button("r", "   Recientes", "<cmd>Telescope oldfiles<CR>"),
-		d.button("g", "   Buscar texto", "<cmd>Telescope live_grep<CR>"),
-		d.button("n", "   Notas", "<cmd>Oil ~/Notes<CR>"),
+		d.button("e", "   New file", "<cmd>ene | startinsert<CR>"),
+		d.button("f", "   Find file", "<cmd>Telescope find_files<CR>"),
+		d.button("r", "   Recent", "<cmd>Telescope oldfiles<CR>"),
+		d.button("g", "   Search text", "<cmd>Telescope live_grep<CR>"),
+		d.button("n", "   Notes", "<cmd>Oil ~/Notes<CR>"),
 		d.button("c", "   Config (nix-conf)", "<cmd>Oil ~/nix-conf<CR>"),
-		d.button("q", "   Salir", "<cmd>qa<CR>"),
+		d.button("q", "   Quit", "<cmd>qa<CR>"),
 	}
 	d.section.footer.val = "NixOS"
 	d.section.footer.opts.hl = "AlphaFooter"
 	require("alpha").setup(d.config)
 end)
 
--- ==================================================== FORMATO AL GUARDAR ====
+-- ===================================================== FORMAT ON SAVE =======
 require("conform").setup({
 	formatters_by_ft = {
 		python = { "black" },
@@ -404,10 +404,10 @@ require("conform").setup({
 })
 map("n", "<leader>cf", function()
 	require("conform").format({ lsp_format = "fallback" })
-end, { desc = "Formatear archivo" })
+end, { desc = "Format file" })
 
--- ======================================================= DIAGNÓSTICOS =======
+-- ========================================================== DIAGNOSTICS =====
 require("trouble").setup()
-map("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Diagnóstico del proyecto" })
-map("n", "<leader>xd", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", { desc = "Diagnóstico del archivo" })
-map("n", "<leader>xs", "<cmd>Trouble symbols toggle<cr>", { desc = "Símbolos del archivo" })
+map("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Project diagnostics" })
+map("n", "<leader>xd", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", { desc = "File diagnostics" })
+map("n", "<leader>xs", "<cmd>Trouble symbols toggle<cr>", { desc = "File symbols" })

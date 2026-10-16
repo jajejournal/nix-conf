@@ -7,13 +7,13 @@ let t = import ./theme.nix; in
     vSync = true;
     fade = true;
     fadeDelta = 4;
-    # Sombra suave (se excluye la barra y el reloj-calendario)
+    # Soft shadow (the bar and the clock-calendar are excluded)
     shadow = true;
     shadowOffsets = [ (-12) (-12) ];
     shadowOpacity = 0.30;
     shadowExclude = [ "class_g = 'Polybar'" "class_g = 'clockcal'" ];
     settings = {
-      # Esquinas redondeadas de las ventanas
+      # Rounded window corners
       corner-radius = 8;
       rounded-corners-exclude = [ "class_g = 'Polybar'" "class_g = 'clockcal'" ];
       shadow-radius = 12;
