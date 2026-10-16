@@ -1,22 +1,46 @@
 # Programs for terminal/lightweight
-{ config, pkgs, lib, ... }:
-let t = import ./theme.nix; in
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+let
+  t = import ./theme.nix;
+in
 {
   home.packages = with pkgs; [
     # Documents and text
-    pandoc glow poppler-utils            # glow = markdown in terminal; pdftotext/pdftoppm
+    pandoc
+    glow
+    poppler-utils # glow = markdown in terminal; pdftotext/pdftoppm
     # Images
-    imv chafa ueberzugpp                 # imv = lightweight image viewer; chafa = terminal image viewer
+    imv
+    chafa
+    ueberzugpp
+    feh # imv = lightweight image viewer; chafa = terminal image viewer
     # Audio / video
-    cmus yt-dlp ffmpeg
+    cmus
+    yt-dlp
+    ffmpeg
     # Files
-    p7zip unzip zip ncdu duf
+    p7zip
+    unzip
+    zip
+    ncdu
+    duf
     # Network / bluetooth (terminal)
     bluetui
     # System
-    ripgrep fd jq tealdeer xdg-utils
+    ripgrep
+    fd
+    jq
+    tealdeer
+    xdg-utils
     # CD / DVD
-    abcde cdrkit libdvdcss
+    abcde
+    cdrkit
+    libdvdcss
   ];
 
   # PDF and ebooks: zathura (black; Ctrl+r invert PDF colors)
@@ -48,7 +72,7 @@ let t = import ./theme.nix; in
       keep-open = true;
       save-position-on-quit = true;
       background-color = t.bg;
-      autofit-larger = "760x460";     # same size as the floating terminal
+      autofit-larger = "760x460"; # same size as the floating terminal
       image-display-duration = "inf";
     };
   };
