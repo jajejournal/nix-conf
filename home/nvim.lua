@@ -20,20 +20,58 @@ o.splitright = true
 o.splitbelow = true
 o.mouse = "a"
 
--- Theme: GitHub Dark (background forced to pure black below)
-pcall(function()
-	require("github-theme").setup({})
-end)
-local function black()
-	for _, g in ipairs({ "Normal", "NormalNC", "NormalFloat", "SignColumn", "EndOfBuffer", "LineNr", "FloatBorder" }) do
-		local hl = vim.api.nvim_get_hl(0, { name = g, link = false })
-		hl.bg = "#000000"
-		vim.api.nvim_set_hl(0, g, hl)
-	end
-end
-vim.api.nvim_create_autocmd("ColorScheme", { callback = black })
-pcall(vim.cmd.colorscheme, "github_dark_default")
-black()
+-- Theme:  Custom GitHub Dark with pure black and exact palette
+require("github-theme").setup({
+	options = {
+		compile_path = vim.fn.stdpath("cache") .. "/github-theme",
+		compile_file_suffix = "_compiled",
+		hide_inactive_statusline = false,
+		transparent = false,
+		terminal_colors = true,
+		background = {
+			dark = "default",
+			light = "light",
+		},
+	},
+	specs = {
+		all = {
+			syntax = {
+				string = "#3fb950", -- green
+				number = "#ffa657", -- orange
+				boolean = "#ffa657", -- orange
+				func = "#e3b341", -- yellow
+				keyword = "#ff7b72", -- red
+				type = "#58a6ff", -- blue
+				identifier = "#bc8cff", -- purple
+				operator = "#56d4dd", -- cyan
+				comment = "#8b949e", -- dim
+			},
+			uv = {
+				bg = "#000000", -- Fondo negro puro
+				bgAlt = "#0a0a0a",
+				surface = "#1a1a1a",
+				fg = "#e6edf3",
+				syntax = "#e6edf3",
+			},
+		},
+	},
+	groups = {
+		all = {
+			Normal = { fg = "#e6edf3", bg = "#000000" },
+			NormalNC = { fg = "#e6edf3", bg = "#0a0a0a" },
+			NormalFloat = { fg = "#e6edf3", bg = "#1a1a1a" },
+			SignColumn = { bg = "#000000" },
+			EndOfBuffer = { fg = "#333333", bg = "#000000" },
+			LineNr = { fg = "#8b949e", bg = "#000000" },
+			CursorLineNr = { fg = "#ffffff", bold = true },
+			FloatBorder = { fg = "#8b949e", bg = "#1a1a1a" },
+			Pmenu = { fg = "#e6edf3", bg = "#1a1a1a" },
+			PmenuSel = { fg = "#000000", bg = "#ffffff" },
+		},
+	},
+})
+
+vim.cmd.colorscheme("github_dark_default")
 
 -- Syntax highlighting (treesitter)
 vim.api.nvim_create_autocmd("FileType", {
