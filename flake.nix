@@ -17,9 +17,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # OpenCode V2 (rama dev = 2.x). NO le ponemos follows para no forzar
-    # su nixpkgs-unstable contra el nuestro (evita romper su build).
-    opencode.url = "github:anomalyco/opencode/dev";
+    # OpenCode V2 (rama dev = 2.x). DESACTIVADO por ahora: se descarga el repo
+    # entero aunque el módulo no se use, lo que hace lento el instalar desde el
+    # ISO. Descomenta estas líneas (y ./modules/opencode.nix más abajo) cuando
+    # quieras usarlo.
+    # opencode.url = "github:anomalyco/opencode/dev";
   };
 
   outputs = { self, nixpkgs, home-manager, disko, nixos-hardware, ... }@inputs:

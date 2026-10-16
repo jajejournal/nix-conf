@@ -170,10 +170,12 @@ Shared config lives in `modules/`; only machine-specific bits live in `hosts/<na
 `nixpkgs` only ships OpenCode 1.x. V2 lives in the `dev` branch of
 `anomalyco/opencode`, which publishes a flake. `modules/opencode.nix` is
 included but **disabled by default** (it builds from source). Enable it by
-uncommenting the line in `flake.nix`:
+uncommenting **two** lines in `flake.nix`:
 
 ```nix
-# ./modules/opencode.nix
+    opencode.url = "github:anomalyco/opencode/dev";
+    ...
+    ./modules/opencode.nix
 ```
 
 Then `nix flake lock && sudo nixos-rebuild switch --flake .#t420`. To try it
