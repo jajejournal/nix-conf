@@ -33,9 +33,9 @@ in
       ${pkgs.xset}/bin/xset dpms 600 900 1200
       ${pkgs.xss-lock}/bin/xss-lock --transfer-sleep-lock -- ${pkgs.i3lock}/bin/i3lock --nofork -c 000000 &
       # Hide the mouse cursor while typing
-      ${pkgs.unclutter}/bin/unclutter -idle 2 -root &
+      ${pkgs.unclutter}/bin/unclutter -idle 2 &
       # Phone integration (KDE Connect); manage it with: kdeconnect-app
-      ${pkgs.kdeconnect}/bin/kdeconnectd &
+      ${pkgs.kdePackages.kdeconnect-kde}/bin/kdeconnectd &
     '';
     windowManager.i3 = {
       enable = true;

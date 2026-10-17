@@ -78,7 +78,10 @@ let t = import ./theme.nix; in
   };
 
   # --- XDG user folders (Documents, Downloads, Music, Videos...) ---
-  xdg.userDirs.enable = true;
+  xdg.userDirs = {
+    enable = true;
+    createDirectories = true;
+  };
 
   # --- Qt apps follow the same dark theme as GTK (KeePassXC, Flameshot, OBS...) ---
   qt = {
@@ -87,12 +90,10 @@ let t = import ./theme.nix; in
     style.name = "adwaita-dark";
   };
 
-  # --- Graphical file manager (Thunar) ---
-  programs.thunar = {
-    enable = true;
-    plugins = with pkgs; [ thunar-volman thunar-archive-plugin ];
-  };
-  home.packages = with pkgs; [ tumbler file-roller ];
+  # --- File manager ---
+  # Thunar is enabled system-wide in modules/desktop.nix (NixOS module).
+  # File Roller handles "extract here" in Thunar and double-clicked archives.
+  home.packages = with pkgs; [ file-roller ];
 
   # Declarative firefox
   programs.firefox = {

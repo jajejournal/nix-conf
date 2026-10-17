@@ -51,8 +51,16 @@
   ];
   environment.systemPackages = with pkgs; [
     system-config-printer # manage printers from a GUI
-    (hunspellWithDicts (with hunspellDicts; [ es_ES en_US ]))
+    (hunspell.withDicts (d: [ d.es_ES d.en_US ])) # dictionaries + DICPATH
+    tumbler # thumbnail service for the file manager
   ];
+
+  # --- Graphical file manager (Thunar) ---
+  # programs.thunar is a NixOS module (home-manager has no Thunar module).
+  programs.thunar = {
+    enable = true;
+    plugins = with pkgs; [ thunar-volman thunar-archive-plugin ];
+  };
 
   # --- Phone integration (KDE Connect: files, clipboard, notifications) ---
   programs.kdeconnect.enable = true;
