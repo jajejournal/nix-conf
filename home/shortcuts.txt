@@ -13,6 +13,7 @@
      6. Yazi (files)                   14. rofi / btop / lazygit
      7. Neovim                         15. Firefox
      8. Telescope / Oil / completion   16. Git and NixOS (commands)
+     17. Everyday apps (GUI)
 
 
 ================================================================================
@@ -32,8 +33,10 @@
    Mod + Esc .............. lock screen
    Mod + Shift + e ........ power / reboot / lock / logout menu
    Mod + v ................ clipboard history (everything you copied)
-   Print .................. screenshot area -> clipboard
-   Shift + Print .......... screenshot area -> save to ~/Pictures
+   Mod + c ................ calculator (qalculate)
+   Mod + Shift + m ........ external monitors (arandr)
+   Print .................. screenshot: select, draw, copy (flameshot)
+   Shift + Print .......... screenshot: select and save to ~/Pictures
 
  (When opening these programs, i3 also moves you to their workspace.
   Neovim (code) -> 3.  Window borders: blue = focused, grey = others.)
@@ -335,6 +338,9 @@
 11. IMV  (images)    imv photo.jpg
 ================================================================================
 
+   By default images open in mpv (it sizes the window to the image, so
+   there are no borders). Use imv if you prefer a dedicated viewer.
+
    n / p  (or arrows) ..... next / previous image
    + / - .................. zoom in / out
    h j k l ................ move image when zoomed
@@ -433,5 +439,30 @@
    nix-shell -p package                         try a program without installing it
    nmtui                                        wifi networks
    bluetui                                      bluetooth in terminal
+
+
+================================================================================
+  17. EVERYDAY APPS (GUI)
+================================================================================
+
+  LibreOffice ............ office documents (double-click .docx, .xlsx, .pptx)
+  Thunar ................. graphical file manager (folders, USB, extract)
+  File Roller ............ compress / extract archives
+  Flameshot .............. screenshot with drawing (Print)
+  OBS Studio ............. record the screen
+  KeePassXC .............. password manager
+  qalculate .............. calculator (Mod + c)
+  GParted ................ partition disks
+  arandr ................. move/resize monitors (Mod + Shift + m)
+  Syncthing .............. sync folders between machines (web UI: localhost:8384)
+  KDE Connect ............ phone <-> laptop (open with: kdeconnect-app)
+  Tesseract (OCR) ........ text from an image:  tesseract image.png -
+  Obsidian ............... notes app (the neovim notes live in ~/Notes)
+
+  Printing ................ set up printers with: system-config-printer
+                            (network / AirPrint printers are found automatically)
+
+  Screen lock ............. automatic after 10 min (and before suspend);
+                            Mod + Esc locks it now
 
 ================================================================================

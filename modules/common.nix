@@ -13,6 +13,8 @@
     dates = "weekly";
     options = "--delete-older-than 14d";
   };
+  # Allow proprietary packages (Obsidian, and others if added later).
+  nixpkgs.config.allowUnfree = true;
 
   # --- Network / language ---
   # mkDefault is used so a host can override it with lib.mkForce.

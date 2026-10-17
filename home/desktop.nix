@@ -77,6 +77,23 @@ let t = import ./theme.nix; in
     gtk3.extraCss = "window, .background { background-color: ${t.bg}; }";
   };
 
+  # --- XDG user folders (Documents, Downloads, Music, Videos...) ---
+  xdg.userDirs.enable = true;
+
+  # --- Qt apps follow the same dark theme as GTK (KeePassXC, Flameshot, OBS...) ---
+  qt = {
+    enable = true;
+    platformTheme.name = "adwaita";
+    style.name = "adwaita-dark";
+  };
+
+  # --- Graphical file manager (Thunar) ---
+  programs.thunar = {
+    enable = true;
+    plugins = with pkgs; [ thunar-volman thunar-archive-plugin ];
+  };
+  home.packages = with pkgs; [ tumbler file-roller ];
+
   # Declarative firefox
   programs.firefox = {
     enable = true;

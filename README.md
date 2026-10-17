@@ -30,9 +30,15 @@ My NixOS 26.05 setup: **flakes + home-manager + disko**, with an **i3** desktop 
 | Compositor | picom — rounded corners + soft shadows |
 | Editor | Neovim: LSP, completion, format on save (conform), diagnostics panel (trouble), start screen (alpha) |
 | Notes | Neovim + obsidian.nvim, vault in `~/Notes` |
-| Files / media | yazi, zathura, mpv, imv, cmus |
+| Files / media | yazi (TUI) + Thunar (GUI), zathura, mpv, imv, cmus |
+| Office | LibreOffice (`.docx` / `.xlsx` / `.pptx`) with ES + EN spell check |
+| Screenshots / recording | flameshot (`Print`) · OBS Studio |
+| Passwords | KeePassXC |
+| Printing | CUPS + avahi; set up with `system-config-printer` |
+| Phone | KDE Connect (`kdeconnect-app`) |
 | Browser | Firefox (declarative profile) |
-| Theme | JetBrainsMono Nerd Font + Inter, colors from `home/theme.nix` |
+| Theme | JetBrainsMono Nerd Font + Inter, colors from `home/theme.nix` (GTK **and Qt**) |
+| Session | locks after 10 min and before suspend (`xss-lock` + i3lock) |
 | Disk | disko: GPT, 1 GB ESP + ext4 root (LUKS optional) |
 
 Press **Super + ç** at any time to open the shortcuts cheatsheet (`home/shortcuts.txt`).

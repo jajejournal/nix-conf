@@ -6,7 +6,6 @@ let
   bl = "${pkgs.brightnessctl}/bin/brightnessctl";
   powermenu = ''rofi -show power -modi "power:${pkgs.rofi-power-menu}/bin/rofi-power-menu"'';
   shot = "${pkgs.maim}/bin/maim";
-  clip = "${pkgs.xclip}/bin/xclip -selection clipboard -t image/png";
   # Clipboard: clipmenud stores the history, clipmenu shows it in rofi
   clipmenu = "${pkgs.clipmenu}/bin/clipmenu";
   rofi = "${pkgs.rofi}/bin/rofi";
@@ -29,6 +28,14 @@ in
       ${pkgs.xsetroot}/bin/xsetroot -solid "${t.bg}"
       ${pkgs.feh}/bin/feh --bg-fill ${home}/Pictures/wallpaper.png
       ${pkgs.xset}/bin/xset r rate 250 40
+      # Screen: blank after 10 min, lock (xss-lock) and turn the display off.
+      ${pkgs.xset}/bin/xset s 600 600
+      ${pkgs.xset}/bin/xset dpms 600 900 1200
+      ${pkgs.xss-lock}/bin/xss-lock --transfer-sleep-lock -- ${pkgs.i3lock}/bin/i3lock --nofork -c 000000 &
+      # Hide the mouse cursor while typing
+      ${pkgs.unclutter}/bin/unclutter -idle 2 -root &
+      # Phone integration (KDE Connect); manage it with: kdeconnect-app
+      ${pkgs.kdeconnect}/bin/kdeconnectd &
     '';
     windowManager.i3 = {
       enable = true;
@@ -104,9 +111,14 @@ in
           "${mod}+backslash" = "split h";
           "${mod}+minus" = "split v";
 
-          # Screenshots (Print = to clipboard, Shift+Print = save to ~/Pictures)
-          "Print" = "exec --no-startup-id ${shot} -s | ${clip}";
+          # Screenshots: Print = draw/annotate then copy (flameshot),
+          # Shift+Print = quick save to ~/Pictures
+          "Print" = "exec --no-startup-id ${pkgs.flameshot}/bin/flameshot gui";
           "Shift+Print" = "exec --no-startup-id ${shot} -s ~/Pictures/$(date +%F_%H-%M-%S).png";
+
+          # Everyday apps
+          "${mod}+c" = "exec ${pkgs.qalculate-gtk}/bin/qalculate-gtk";   # calculator
+          "${mod}+Shift+m" = "exec ${pkgs.arandr}/bin/arandr";           # external monitors
 
           # ThinkPad physical keys
           "XF86AudioRaiseVolume" = "exec --no-startup-id ${wpctl} set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+";

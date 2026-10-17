@@ -41,6 +41,18 @@ in
     abcde
     cdrkit
     libdvdcss
+    # Everyday GUI apps
+    libreoffice-fresh # office documents
+    keepassxc # password manager
+    qalculate-gtk # calculator
+    flameshot # screenshots with drawing
+    obs-studio # screen recording
+    obsidian # notes / second brain
+    tesseract # OCR (text from images)
+    arandr # configure external monitors
+    gparted # partition disks (GUI)
+    unclutter # hide the mouse cursor while typing
+    syncthing # sync folders between machines
   ];
 
   # PDF and ebooks: zathura (black; Ctrl+r invert PDF colors)
@@ -121,10 +133,27 @@ in
       "video/x-msvideo" = "mpv.desktop";
       "audio/mpeg" = "mpv.desktop";
       "audio/flac" = "mpv.desktop";
+      # Images open in mpv on purpose: it sizes the window to the image,
+      # so they show with no borders and no extra chrome.
       "image/png" = "mpv.desktop";
       "image/jpeg" = "mpv.desktop";
       "image/gif" = "mpv.desktop";
       "image/webp" = "mpv.desktop";
+      # Office documents
+      "application/msword" = "libreoffice-writer.desktop";
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = "libreoffice-writer.desktop";
+      "application/vnd.oasis.opendocument.text" = "libreoffice-writer.desktop";
+      "application/vnd.ms-excel" = "libreoffice-calc.desktop";
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = "libreoffice-calc.desktop";
+      "application/vnd.oasis.opendocument.spreadsheet" = "libreoffice-calc.desktop";
+      "application/vnd.ms-powerpoint" = "libreoffice-impress.desktop";
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation" = "libreoffice-impress.desktop";
+      "application/vnd.oasis.opendocument.presentation" = "libreoffice-impress.desktop";
+      # Folders and archives
+      "inode/directory" = "thunar.desktop";
+      "application/zip" = "org.gnome.FileRoller.desktop";
+      "application/x-7z-compressed" = "org.gnome.FileRoller.desktop";
+      "application/x-tar" = "org.gnome.FileRoller.desktop";
       "text/html" = "firefox.desktop";
       "x-scheme-handler/http" = "firefox.desktop";
       "x-scheme-handler/https" = "firefox.desktop";
